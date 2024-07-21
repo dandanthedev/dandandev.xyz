@@ -149,7 +149,7 @@ My birthday is on the 22nd of November.
 			icon: faGithub,
 			text: 'Github',
 			run: () => {
-				window.open('https://github.com/dandanthedev');
+				window.open('https://github.com/dandanthedev/daanschenkel.nl-desktop');
 			}
 		},
 		{

@@ -377,15 +377,13 @@ My birthday is on the 22nd of November.
 	.desktopIcons {
 		margin-top: 10px;
 
-		height: 100%;
+		height: calc(100% - 55px);
 		display: grid;
-		grid-template-columns: repeat(
-			auto-fill,
-			minmax(100px, 1fr)
-		); /* Adjust the min-width to fit your icons */
-		gap: 0px; /* Adjust the gap between icons */
-		align-items: start;
-		justify-items: center;
+		grid-template-columns: repeat(auto-fill, 74px);
+		grid-template-rows: repeat(auto-fill, 70px);
+		grid-auto-flow: column;
+		padding-top: 6px;
+		gap: 28px 1px;
 	}
 	.desktopIcon {
 		display: flex;

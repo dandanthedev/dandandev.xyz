@@ -18,7 +18,8 @@
 		chrome: '/icons/chrome.png',
 		linkedin: '/icons/linkedin.png',
 
-		txt: '/icons/txt.png'
+		txt: '/icons/txt.png',
+		excel: '/icons/excel.png'
 	};
 
 	function mobileCheck() {

@@ -11,8 +11,10 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { preloadedAssets } from '$lib/stores.js';
 	import { goto } from '$app/navigation';
-	import { faG, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+	import { faCheckCircle, faG, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 	import { getList, play } from '$lib/sockets/sounds.js';
+	import Choices from '../../lib/Choices.svelte';
+	import ChoicesResults from '../../lib/ChoicesResults.svelte';
 	let zindex = 1;
 
 	let time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
@@ -157,6 +159,20 @@ My birthday is on the 22nd of November.
 				window.open('https://www.linkedin.com/in/daan-schenkel-b65726226/');
 			},
 			color: '#0A66C2'
+		},
+		{
+			icon: faCheckCircle,
+			text: 'Thing Battle',
+			component: Choices,
+			width: 700,
+			height: 400
+		},
+		{
+			icon: $preloadedAssets.excel,
+			text: 'thingbattleresults.xslx',
+			component: ChoicesResults,
+			width: 800,
+			height: 400
 		},
 		{
 			icon: $preloadedAssets.debugger,
@@ -336,10 +352,14 @@ My birthday is on the 22nd of November.
 		margin-top: 10px;
 
 		height: 100%;
-
-		display: flex;
-		flex-direction: column;
-		overflow-y: auto;
+		display: grid;
+		grid-template-columns: repeat(
+			auto-fill,
+			minmax(100px, 1fr)
+		); /* Adjust the min-width to fit your icons */
+		gap: 0px; /* Adjust the gap between icons */
+		align-items: start;
+		justify-items: center;
 	}
 	.desktopIcon {
 		display: flex;

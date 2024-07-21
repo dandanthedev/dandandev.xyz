@@ -1,14 +1,13 @@
 <script>
 	import { faWindows } from '@fortawesome/free-brands-svg-icons';
-	import { faExpand } from '@fortawesome/free-solid-svg-icons';
+	import { faPlay } from '@fortawesome/free-solid-svg-icons';
 	import { preloadedAssets } from '$lib/stores.js';
 	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	let overlay = true;
-	let fullscreen = false;
-	let loadingText = 'Initialising...';
+	let loadingText = '';
 	let assets = {
 		background: '/background.jpg',
 		volume: '/taskbar/volume.png',
@@ -19,7 +18,10 @@
 		linkedin: '/icons/linkedin.png',
 
 		txt: '/icons/txt.png',
-		excel: '/icons/excel.png'
+		excel: '/icons/excel.png',
+
+		bootup: '/bootup.mp3',
+		shutdown: '/shutdown.mp3'
 	};
 
 	function mobileCheck() {
@@ -36,29 +38,6 @@
 				check = true;
 		})(navigator.userAgent || navigator.vendor || window.opera);
 		return check;
-	}
-
-	async function requestFullScreen() {
-		const element = document.body;
-		// Supports most browsers and their versions.
-		var requestMethod =
-			element.requestFullScreen ||
-			element.webkitRequestFullScreen ||
-			element.mozRequestFullScreen ||
-			element.msRequestFullScreen;
-
-		if (requestMethod) {
-			// Native full screen.
-			requestMethod.call(element);
-		} else if (typeof window.ActiveXObject !== 'undefined') {
-			// Older IE.
-			var wscript = new ActiveXObject('WScript.Shell');
-			if (wscript !== null) {
-				wscript.SendKeys('{F11}');
-			}
-		}
-
-		fullscreen = true;
 	}
 
 	async function load() {
@@ -89,10 +68,14 @@
 	}
 
 	let mobile = mobileCheck();
+
+	onMount(async () => {
+		load();
+	});
 </script>
 
 {#if overlay}
-	<div class="blackOverlay" out:fade={{ duration: 2000 }} in:fade={{ duration: 500 }}>
+	<div class="blackOverlay" out:fade={{ duration: 1000 }} in:fade={{ duration: 500 }}>
 		{#if mobile}
 			<div class="mobileContainer">
 				<p class="mobileWarning">
@@ -102,7 +85,6 @@
 				<button
 					on:click={async () => {
 						mobile = false;
-						await requestFullScreen();
 						load();
 					}}
 					class="mobileContinue"
@@ -111,16 +93,6 @@
 				</button>
 				<p class="mobileNote">if not,leave ig</p>
 			</div>
-		{:else if !fullscreen}
-			<button
-				on:click={async () => {
-					await requestFullScreen();
-					load();
-				}}
-				class="fullScreenButton"
-			>
-				<Fa icon={faExpand} size="2x" />
-			</button>
 		{/if}
 	</div>
 {/if}
@@ -138,6 +110,7 @@
 </div>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
 	.blackOverlay {
 		position: fixed;
 		top: 0;
@@ -172,15 +145,14 @@
 	}
 
 	.bootScreen-text {
-		position: fixed;
-		left: 10px;
+		text-align: center;
 		bottom: 0;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
 		color: white;
-		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		font-family: 'Source Code Pro', monospace;
 	}
 
 	.loader {

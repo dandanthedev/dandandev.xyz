@@ -11,7 +11,7 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { preloadedAssets } from '$lib/stores.js';
 	import { goto } from '$app/navigation';
-	import { faCheckCircle, faG, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+	import { faArrowLeft, faCheckCircle, faG, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 	import { getList, play } from '$lib/sockets/sounds.js';
 	import Choices from '../../lib/Choices.svelte';
 	import ChoicesResults from '../../lib/ChoicesResults.svelte';
@@ -74,7 +74,10 @@
 	let debug = false;
 	onMount(async () => {
 		if ($preloadedAssets.loading) goto('/');
-		overlay = false;
+		else overlay = false;
+
+		const audio = new Audio($preloadedAssets.bootup);
+		audio.play();
 
 		setInterval(() => {
 			time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
@@ -296,10 +299,25 @@ My birthday is on the 22nd of November.
 		<div class="startMenu" transition:fly={{ y: 100, duration: 200 }}>
 			<div class="startMenu-sidebar">
 				<div class="startMenu-sidebar-spacer" />
+
+				<button
+					class="startMenu-sidebar-button"
+					on:click={async () => {
+						overlay = true;
+						const audio = new Audio($preloadedAssets.shutdown);
+						audio.play();
+						await new Promise((r) => setTimeout(r, 1000));
+						goto('/');
+					}}
+				>
+					<Fa icon={faArrowLeft} size="2x" />
+				</button>
 				<button
 					class="startMenu-sidebar-button"
 					on:click={() => {
 						overlay = true;
+						const audio = new Audio($preloadedAssets.shutdown);
+						audio.play();
 					}}
 				>
 					<Fa icon={faPowerOff} size="2x" />
@@ -480,7 +498,7 @@ My birthday is on the 22nd of November.
 	}
 
 	.startMenu-sidebar-spacer {
-		height: 93%;
+		height: 89%;
 	}
 
 	.startMenu-sidebar-button {

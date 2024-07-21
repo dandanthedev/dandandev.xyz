@@ -86,25 +86,30 @@
 		await new Promise((r) => setTimeout(r, 2000)); //wait for fadeout
 		goto('/home');
 	}
+
+	let mobile = mobileCheck();
 </script>
 
 {#if overlay}
 	<div class="blackOverlay" out:fade={{ duration: 2000 }} in:fade={{ duration: 500 }}>
-		{#if mobileCheck()}
-			<p class="mobileWarning">
-				Sorry, but i couldn't get the app optimized for mobile devices.<br />
-				Are you sure you want to continue?
-			</p>
-			<button
-				on:click={async () => {
-					await requestFullScreen();
-					load();
-				}}
-				class="fullScreenButton"
-			>
-				Yes
-			</button>
-			<p class="mobileNote">if not,leave ig</p>
+		{#if mobile}
+			<div class="mobileContainer">
+				<p class="mobileWarning">
+					Sorry, but i couldn't get the app optimized for mobile devices.<br />
+					Are you sure you want to continue?
+				</p>
+				<button
+					on:click={async () => {
+						mobile = false;
+						await requestFullScreen();
+						load();
+					}}
+					class="mobileContinue"
+				>
+					Yes
+				</button>
+				<p class="mobileNote">if not,leave ig</p>
+			</div>
 		{:else if !fullscreen}
 			<button
 				on:click={async () => {
@@ -217,5 +222,26 @@
 	.mobileNote {
 		font-size: 0.8em;
 		color: white;
+	}
+
+	.mobileContinue {
+		background-color: white;
+		border: none;
+		font-size: 0.9em;
+		color: black;
+		cursor: pointer;
+	}
+
+	.mobileContainer {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: black;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
 	}
 </style>

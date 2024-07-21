@@ -91,7 +91,7 @@
 {#if overlay}
 	<div class="blackOverlay" out:fade={{ duration: 2000 }} in:fade={{ duration: 500 }}>
 		{#if mobileCheck()}
-			<p>
+			<p class="mobileWarning">
 				Sorry, but i couldn't get the app optimized for mobile devices.<br />
 				Are you sure you want to continue?
 			</p>
@@ -104,7 +104,7 @@
 			>
 				Yes
 			</button>
-			<p>if not,leave ig</p>
+			<p class="mobileNote">if not,leave ig</p>
 		{:else if !fullscreen}
 			<button
 				on:click={async () => {
@@ -206,6 +206,16 @@
 		border: none;
 		font-size: 0.9em;
 		cursor: pointer;
+		color: white;
+	}
+
+	.mobileWarning {
+		font-size: 0.9em;
+		color: white;
+	}
+
+	.mobileNote {
+		font-size: 0.8em;
 		color: white;
 	}
 </style>

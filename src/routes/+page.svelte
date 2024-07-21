@@ -70,7 +70,7 @@
 	let mobile = mobileCheck();
 
 	onMount(async () => {
-		load();
+		if (!mobile) load();
 	});
 </script>
 

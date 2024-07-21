@@ -364,6 +364,14 @@ My birthday is on the 22nd of November.
 		left: 0;
 		right: 0;
 		bottom: 0;
+
+		/*to prevent custom dragging from being interfered with*/
+		user-drag: none;
+		-webkit-user-drag: none;
+		user-select: none;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
 	}
 
 	.desktopIcons {

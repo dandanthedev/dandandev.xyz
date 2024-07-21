@@ -10,10 +10,10 @@
 	{/if}
 </p>
 
-{#if passToComponent.button}
-	<button on:click={passToComponent.button.action} class="button"
-		>{passToComponent.button.text}</button
-	>
+{#if passToComponent.buttons?.length > 0}
+	{#each passToComponent.buttons as button}
+		<button on:click={button.action} class="button">{button.text}</button>
+	{/each}
 {/if}
 
 <style>
@@ -29,5 +29,6 @@
 		background-color: #0078d4;
 		color: white;
 		cursor: pointer;
+		margin-right: 10px;
 	}
 </style>

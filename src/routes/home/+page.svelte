@@ -1,14 +1,30 @@
 <script>
+	import { faWindows, faGithub } from '@fortawesome/free-brands-svg-icons';
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import Explorer from '$lib/Explorer.svelte';
 	import Window from '$lib/Window.svelte';
+	import Text from '$lib/Text.svelte';
+	import SendMessage from '$lib/SendMessage.svelte';
 	import { v4 as uuidv4 } from 'uuid';
 	import Fa from 'svelte-fa';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { preloadedAssets } from '$lib/stores.js';
 	import { goto } from '$app/navigation';
+	import { faG, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+	import { getList, play } from '$lib/sockets/sounds.js';
 	let zindex = 1;
+
+	let time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+	let date = new Date().toLocaleDateString('nl-NL', {
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric'
+	});
+
+	let startMenu = false;
+	let soundsMenu = false;
+
 	export function getNextZIndex() {
 		zindex++;
 		return zindex;
@@ -57,6 +73,15 @@
 	onMount(async () => {
 		if ($preloadedAssets.loading) goto('/');
 		overlay = false;
+
+		setInterval(() => {
+			time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+			date = new Date().toLocaleDateString('nl-NL', {
+				year: 'numeric',
+				month: 'numeric',
+				day: 'numeric'
+			});
+		}, 1000);
 	});
 
 	const desktopIcons = [
@@ -68,9 +93,74 @@
 			height: 600
 		},
 		{
+			icon: $preloadedAssets.txt,
+			text: 'about.txt',
+			component: Text,
+			width: 700,
+			height: 400,
+			passToComponent: {
+				text: `Heya! My name is Daan, better known online as dandandev/DannyDanDan. I live in The Netherlands. I also grew up and go to school there. I quickly discovered my obsession to everything tech related when i was about 5-6. I've been tinkering with everything that makes those beep boop sounds ever since.<br/><br/>
+
+My journey started with Scratch, where i made a lot of games and animations. After that i started learning Processing and some Arduino. After this i discovered Node.js, which i've been using for a while now. I've also tried some Java, Python & Skript.<br/><br/>
+
+Nowadays i mainly spend my time building webapps with SvelteKit. I ❤️ Svelte(kit) and use it to build all my websites, even the one you're looking at right now!<br/><br/>
+
+Before Svelte, i used React, which i now use to build mobile apps.<br/><br/>
+
+My birthday is on the 22nd of November.
+                `,
+				allowHTML: true
+			}
+		},
+		{
+			icon: $preloadedAssets.txt,
+			text: 'contact.txt',
+			component: Text,
+			width: 400,
+			height: 200,
+			passToComponent: {
+				text: `Yes, i see you, tHeSe bUtTonS doNt ExIsT iN NorMaL WiNDows!!! (dont care didnt ask)`,
+				buttons: [
+					{
+						text: 'Send me an email',
+						onClick: () => {
+							location = 'mailto:daan@daanschenkel.nl';
+						}
+					},
+					{
+						text: 'Contact me on Discord',
+						onClick: () => {
+							location = 'https://discord.com/users/654390669472694284';
+						}
+					}
+				]
+			}
+		},
+		{
+			icon: $preloadedAssets.chrome,
+			text: 'message.html',
+			component: SendMessage,
+			width: 400,
+			height: 200
+		},
+		{
+			icon: faGithub,
+			text: 'Github',
+			run: () => {
+				window.open('https://github.com/dandanthedev');
+			}
+		},
+		{
+			icon: $preloadedAssets.linkedin,
+			text: 'LinkedIn',
+			run: () => {
+				window.open('https://www.linkedin.com/in/daan-schenkel-b65726226/');
+			},
+			color: '#0A66C2'
+		},
+		{
 			icon: $preloadedAssets.debugger,
-			text: 'Debugger',
-			color: 'red',
+			text: 'Debug',
 			run: () => {
 				if (debug) {
 					debug = false;
@@ -95,7 +185,7 @@
 </span>
 
 {#if overlay}
-	<div class="blackOverlay" out:fade={{ duration: 2000 }} />
+	<div class="blackOverlay" out:fade={{ duration: 2000 }} in:fade={{ duration: 500 }} />
 {/if}
 
 <div class="backgroundImage" style="background-image: url({$preloadedAssets.background});">
@@ -116,6 +206,7 @@
 				this={window.component}
 				{openWindow}
 				passToComponent={window.passToComponent}
+				{toastWrapper}
 			/>
 		</Window>
 	{/each}
@@ -148,7 +239,10 @@
 				{#if typeof icon.icon === 'string'}
 					<img src={icon.icon} class="desktopIcon-img" alt="icon" />
 				{:else}
-					<span class="desktopIcon-fa">
+					<span
+						class="desktopIcon-fa"
+						style="background-color: {icon.backgroundColor || 'transparent'};"
+					>
 						<Fa icon={icon.icon} alt="icon" color={icon.color || 'white'} /></span
 					>
 				{/if}
@@ -156,6 +250,65 @@
 			</button>
 		{/each}
 	</div>
+
+	<div class="bottomBar">
+		<button
+			class="startButton winButton"
+			on:click={() => {
+				startMenu = !startMenu;
+			}}
+		>
+			<Fa icon={faWindows} size="2x" />
+		</button>
+		<div class="right">
+			<button
+				class="volume"
+				on:click={() => {
+					soundsMenu = !soundsMenu;
+				}}
+			>
+				<img src={$preloadedAssets.volume} alt="volume" />
+			</button>
+			<p class="dateTime">
+				{time}<br />
+				{date}
+			</p>
+		</div>
+	</div>
+
+	{#if startMenu}
+		<div class="startMenu" transition:fly={{ y: 100, duration: 200 }}>
+			<div class="startMenu-sidebar">
+				<div class="startMenu-sidebar-spacer" />
+				<button
+					class="startMenu-sidebar-button"
+					on:click={() => {
+						overlay = true;
+					}}
+				>
+					<Fa icon={faPowerOff} size="2x" />
+				</button>
+			</div>
+		</div>
+	{/if}
+	{#if soundsMenu}
+		<div class="soundsMenu" transition:fly={{ y: 5, duration: 200 }}>
+			{#await getList()}
+				<p class="loading">Loading...</p>
+			{:then list}
+				{#each list as sound}
+					<button
+						class="sound"
+						on:click={() => {
+							play(sound);
+						}}
+					>
+						<p>{sound}</p>
+					</button>
+				{/each}
+			{/await}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -181,6 +334,12 @@
 
 	.desktopIcons {
 		margin-top: 10px;
+
+		height: 100%;
+
+		display: flex;
+		flex-direction: column;
+		overflow-y: auto;
 	}
 	.desktopIcon {
 		display: flex;
@@ -195,6 +354,10 @@
 		background: transparent;
 		border: none;
 		border-radius: 5px;
+
+		width: 84px;
+		height: 90px;
+
 		margin-bottom: 10px;
 	}
 
@@ -210,6 +373,9 @@
 
 	.desktopIcon-img {
 		width: 50px;
+		height: 50px;
+
+		object-fit: contain;
 	}
 	.desktopIcon-fa {
 		font-size: 40px;
@@ -219,12 +385,155 @@
 	.desktopIcon-text {
 		margin-top: 5px;
 		font-size: 13px;
+		/*wrap text*/
+		word-wrap: break-word;
+		white-space: normal;
+		/*prevent text from overflowing its container*/
+		width: 100%;
+
 		color: white;
 		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 		margin-bottom: 0;
 	}
 
+	.bottomBar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 40px;
+		background-color: #213540;
+		display: flex;
+		justify-content: left;
+		align-items: center;
+	}
+
+	.startButton {
+		background-color: transparent;
+		border: none;
+		font-size: 0.9em;
+		color: white;
+		cursor: pointer;
+	}
+	.winButton {
+		margin-left: 5px;
+		transition: color 0.2s;
+	}
+
+	.winButton:hover {
+		color: #357ec7;
+	}
+
+	.dateTime {
+		margin-left: auto;
+		margin-right: 10px;
+
+		font-size: 0.8em;
+		color: white;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+		text-align: center;
+	}
 	.toaster {
 		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
+
+	.startMenu {
+		position: fixed;
+		bottom: 40px;
+		left: 0;
+		width: 500px;
+		height: 600px;
+		background-color: #23343b;
+		border-radius: 5px;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+
+	.startMenu-sidebar {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 50px;
+		height: 100%;
+		background-color: #23343b;
+	}
+
+	.startMenu-sidebar-spacer {
+		height: 93%;
+	}
+
+	.startMenu-sidebar-button {
+		background: transparent;
+		border: none;
+		color: #e3f1f4;
+		font-size: 0.7em;
+		padding-left: 12px;
+		padding: 1rem;
+		padding-bottom: 0.3rem;
+		padding-top: 0.3rem;
+		transition: background-color 0.2s;
+	}
+	.startMenu-sidebar-button:hover {
+		background-color: #357ec7;
+	}
+
+	.right {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		margin-left: auto;
+	}
+
+	.volume {
+		background: transparent;
+		border: none;
+		color: white;
+		cursor: pointer;
+		width: 35px;
+		margin-top: 3px;
+
+		transition: filter 0.2s;
+	}
+
+	.volume:hover {
+		filter: brightness(1.2);
+	}
+
+	.volume img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		display: block;
+	}
+
+	.soundsMenu {
+		position: fixed;
+		bottom: 40px;
+		right: 0;
+		width: 330px;
+		height: 80px;
+		background-color: #00426c;
+
+		border-radius: 5px;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	}
+
+	.sound {
+		background: transparent;
+		border: none;
+		color: white;
+		cursor: pointer;
+		height: 100%;
+		padding-left: 15px;
+		padding-right: 15px;
+		transition: background-color 0.2s;
+		border-radius: 5px;
+	}
+	.sound:hover {
+		background-color: #357ec7;
 	}
 </style>

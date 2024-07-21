@@ -51,10 +51,11 @@
 					open = false;
 					await new Promise((r) => setTimeout(r, 201));
 					windows = windows.filter((w) => w.id !== id);
-					toastWrapper(`window ${id} closed, new list: ${windows.map((w) => w.id)}`, 'success', {
-						icon: '⚠️',
-						duration: 2000
-					});
+					if (debug)
+						toastWrapper(`window ${id} closed, new list: ${windows.map((w) => w.id)}`, 'success', {
+							icon: '⚠️',
+							duration: 2000
+						});
 				}}
 			>
 				<Fa icon={faXmark} />

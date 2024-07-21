@@ -117,12 +117,14 @@
 					height: 230,
 					passToComponent: {
 						text: project.description,
-						button: {
-							text: 'Visit website',
-							action: () => {
-								window.open(project.url);
+						buttons: [
+							{
+								text: 'Visit website',
+								action: () => {
+									window.open(project.url);
+								}
 							}
-						},
+						],
 						allowHTML: true
 					}
 				});

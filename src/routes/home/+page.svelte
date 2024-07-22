@@ -15,7 +15,7 @@
 	import { getList, play } from '$lib/sockets/sounds.js';
 	import Choices from '../../lib/Choices.svelte';
 	import ChoicesResults from '../../lib/ChoicesResults.svelte';
-	import { getScreenSize, doOverlap } from '$lib/utils.js';
+	import { getScreenSize } from '$lib/utils.js';
 	let zindex = 1;
 	let volume = 0.5;
 
@@ -384,7 +384,7 @@ My birthday is on the 22nd of November.
 		width = Math.abs(startX - endX);
 		height = Math.abs(startY - endY);
 
-		let selectedDesktopIconElements = [];
+		let selectedDesktopIconElements = new WeakSet();
 
 		for (const desktopIconElement of desktopIconElements) {
 			const rect = desktopIconElement.getBoundingClientRect();
@@ -395,14 +395,12 @@ My birthday is on the 22nd of November.
 				topLeftY < rect.top + rect.height &&
 				topLeftY + height > rect.top
 			) {
-				selectedDesktopIconElements.push(desktopIconElement);
+				selectedDesktopIconElements.add(desktopIconElement);
 			}
 		}
 
 		for (const index in desktopIconElements)
-			desktopIcons[index].clicked = selectedDesktopIconElements.includes(
-				desktopIconElements[index]
-			);
+			desktopIcons[index].clicked = selectedDesktopIconElements.has(desktopIconElements[index]);
 	}
 
 	let desktopIconElements = [];

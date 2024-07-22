@@ -75,7 +75,7 @@
 	class="window"
 	style="width: {width}px; height: {height}px; left: {x}px; top: {y}px; z-index: {zIndex}; opacity: {hidden
 		? 0
-		: 1};"
+		: 1}; pointer-events: {hidden ? 'none' : 'auto'};"
 	in:scale={{ duration: 200, start: 0.9, opacity: 0 }}
 	out:scale={{ duration: 200, start: 0.9, opacity: 0 }}
 	on:mousedown={() => {

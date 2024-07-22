@@ -440,10 +440,17 @@ My birthday is on the 22nd of November.
 				</button>
 				<button
 					class="startMenu-sidebar-button"
-					on:click={() => {
+					on:click={async () => {
 						overlay = true;
 						const audio = new Audio($preloadedAssets.shutdown);
 						audio.play();
+
+						//fadeout music
+						while (currentAudio.volume > 0.1) {
+							currentAudio.volume -= 0.1;
+							await new Promise((r) => setTimeout(r, 100));
+						}
+						currentAudio.pause();
 					}}
 				>
 					<Fa icon={faPowerOff} size="2x" />

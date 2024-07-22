@@ -6,6 +6,7 @@
 	import Fa from 'svelte-fa';
 	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
+	import { initSocket } from '$lib/sockets/sounds.js';
 	let overlay = true;
 	let loadingText = '';
 	let assets = {
@@ -47,7 +48,13 @@
 		//start asset fetching
 		for (const [key, value] of Object.entries(assets)) {
 			loadingText = `Loading ${key}...`;
-			const asset = await fetch(value);
+			const asset = await fetch(value).catch((e) => {
+				loadingText = 'Failed to load ' + key;
+				return null;
+			});
+
+			if (!asset) return;
+
 			//base64 encode the asset
 			assets[key] = await asset.blob().then(
 				(blob) =>
@@ -62,6 +69,9 @@
 
 		$preloadedAssets = assets;
 
+		//connect to sounds server
+		loadingText = 'Connecting to soundserver...';
+		await initSocket();
 		overlay = true;
 		await new Promise((r) => setTimeout(r, 2000)); //wait for fadeout
 		goto('/home');

@@ -2,22 +2,33 @@ import io from 'socket.io-client';
 
 const SOUNDS_URL = 'https://sounds.daanschenkel.nl';
 
-const socket = io(SOUNDS_URL); //todo: env var
+export let socket;
 
 let list = [];
 
-socket.on('list', function (data) {
-    list = data;
-});
 
-socket.on('play', function (data) {
-    if (typeof window === 'undefined') return;
+export function initSocket() {
+    socket = io(SOUNDS_URL);
 
-    const url = SOUNDS_URL + '/' + data + '.wav';
+    socket.on('list', function (data) {
+        list = data;
+    });
 
-    const audio = new Audio(url);
-    audio.play();
-});
+    socket.on('play', function (data) {
+        if (typeof window === 'undefined') return;
+
+        const url = SOUNDS_URL + '/' + data + '.wav';
+
+        const audio = new Audio(url);
+        audio.play();
+    });
+
+    return new Promise((resolve) => {
+        socket.on('connect', function () {
+            resolve();
+        });
+    });
+}
 
 export async function getList() {
     //wait for list to be populated

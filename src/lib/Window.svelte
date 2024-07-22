@@ -1,70 +1,153 @@
 <script>
 	import { draggable } from '@neodrag/svelte';
 	import Fa from 'svelte-fa';
-	import { faXmark } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faMinus,
+		faXmark,
+		faUpRightAndDownLeftFromCenter,
+		faDownLeftAndUpRightToCenter
+	} from '@fortawesome/free-solid-svg-icons';
 	import { scale } from 'svelte/transition';
 	import { onMount } from 'svelte';
+	import { getScreenSize } from '$lib/utils.js';
+
 	export let id;
 	export let windows = [];
 	export let title = 'Window';
-	export let width = 500;
-	export let height = 200;
-	export let x = 0;
-	export let y = 0;
+	export let initialWidth = 500;
+	export let initialHeight = 200;
+	export let initialX = 0;
+	export let initialY = 0;
 	export let debug = false;
 	export let getNextZIndex;
 	export let toastWrapper;
+	export let focus;
+
+	//just to make sure no random linking jazz happens
+	let width = parseInt(initialWidth);
+	let height = parseInt(initialHeight);
+	let x = parseInt(initialX);
+	let y = parseInt(initialY);
+
+	let fullscreen = false;
 
 	let zIndex;
 
-	let open = false;
+	let hidden = false;
+
+	let wBack = width;
+	let hBack = height;
+
+	$: if (focus) {
+		if (!hidden) {
+			hidden = true;
+		} else {
+			zIndex = getNextZIndex();
+			hidden = false;
+			focus = false;
+		}
+	}
 
 	onMount(() => {
-		open = true;
 		zIndex = getNextZIndex();
 	});
+
+	$: if (debug) console.log(width, height, x, y);
 </script>
 
-{#if open}
-	<div
-		use:draggable={{
-			handle: '.header'
-		}}
-		class="window"
-		style="width: {width}px; height: {height}px; left: {x}px; top: {y}px; z-index: {zIndex};"
-		in:scale={{ duration: 200, start: 0.9, opacity: 0 }}
-		out:scale={{ duration: 200, start: 0.9, opacity: 0 }}
-		on:mousedown={() => {
-			zIndex = getNextZIndex();
-		}}
-		on:click={() => {
-			zIndex = getNextZIndex();
-		}}
-	>
-		<div class="header">
-			<h1>{title} {debug ? id : ''}</h1>
-		</div>
-		<div class="icons">
-			<button
-				class="icon"
-				on:click={async () => {
-					open = false;
-					await new Promise((r) => setTimeout(r, 201));
-					windows = windows.filter((w) => w.id !== id);
-					if (debug)
-						toastWrapper(`window ${id} closed, new list: ${windows.map((w) => w.id)}`, 'success', {
-							icon: '⚠️',
-							duration: 2000
-						});
-				}}
-			>
-				<Fa icon={faXmark} />
-			</button>
-		</div>
-		<div class="headerSpacer" />
-		<slot />
+<div
+	use:draggable={{
+		handle: '.header',
+		position: {
+			x: x,
+			y: y
+		},
+		onDrag: (e) => {
+			if (e.offsetX === 0 && e.offsetY === 0) return; //prevents going out of fullscreen while going in
+			if (fullscreen) {
+				if (debug) console.log('going out of fullscreen');
+				fullscreen = false;
+				width = wBack;
+				height = hBack;
+			}
+		}
+	}}
+	class="window"
+	style="width: {width}px; height: {height}px; left: {x}px; top: {y}px; z-index: {zIndex}; opacity: {hidden
+		? 0
+		: 1};"
+	in:scale={{ duration: 200, start: 0.9, opacity: 0 }}
+	out:scale={{ duration: 200, start: 0.9, opacity: 0 }}
+	on:mousedown={() => {
+		zIndex = getNextZIndex();
+	}}
+	on:touchstart={() => {
+		zIndex = getNextZIndex();
+	}}
+	on:click={() => {
+		zIndex = getNextZIndex();
+	}}
+>
+	<div class="header">
+		<h1>{title} {debug ? id : ''}</h1>
 	</div>
-{/if}
+	<div class="icons">
+		<button
+			class="icon"
+			on:click={() => {
+				hidden = true;
+			}}
+		>
+			<Fa icon={faMinus} />
+		</button>
+		<button
+			class="icon"
+			on:click={() => {
+				if (fullscreen) {
+					if (debug) console.log('going out of fullscreen');
+					fullscreen = false;
+					width = wBack;
+					height = hBack;
+				} else {
+					if (debug) console.log('going into fullscreen');
+					fullscreen = true;
+					wBack = width;
+					hBack = height;
+					const { screenW, screenH } = getScreenSize();
+
+					width = screenW - 20;
+					height = screenH - 14;
+
+					x = 0;
+					y = 0;
+				}
+			}}
+		>
+			{#if fullscreen}
+				<Fa icon={faDownLeftAndUpRightToCenter} />
+			{:else}
+				<Fa icon={faUpRightAndDownLeftFromCenter} />
+			{/if}
+		</button>
+		<button
+			class="icon"
+			on:click={async () => {
+				hidden = true;
+				await new Promise((r) => setTimeout(r, 201));
+				windows = windows.filter((w) => w.id !== id);
+				if (debug)
+					toastWrapper(`window ${id} closed, new list: ${windows.map((w) => w.id)}`, 'success', {
+						icon: '⚠️',
+						duration: 2000
+					});
+			}}
+		>
+			<Fa icon={faXmark} />
+		</button>
+	</div>
+	<div class="headerSpacer" />
+	<slot />
+</div>
 
 <style>
 	.window {
@@ -76,6 +159,8 @@
 
 		resize: both;
 		overflow: hidden;
+
+		transition: opacity 0.3s;
 	}
 
 	.header {

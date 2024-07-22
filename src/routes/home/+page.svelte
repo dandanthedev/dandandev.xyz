@@ -11,10 +11,11 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { preloadedAssets } from '$lib/stores.js';
 	import { goto } from '$app/navigation';
-	import { faArrowLeft, faCheckCircle, faG, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+	import { faArrowLeft, faCheckCircle, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 	import { getList, play } from '$lib/sockets/sounds.js';
 	import Choices from '../../lib/Choices.svelte';
 	import ChoicesResults from '../../lib/ChoicesResults.svelte';
+	import { getScreenSize } from '$lib/utils.js';
 	let zindex = 1;
 
 	let time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
@@ -45,18 +46,48 @@
 		}
 		let window = windowData.component;
 
+		const { screenW, screenH } = getScreenSize();
 		if (!windowData.width) windowData.width = 400;
 		if (!windowData.height) windowData.height = 200;
+
+		if (windowData.width > screenW) windowData.width = screenW;
+		if (windowData.height > screenH) windowData.height = screenH;
+
+		if (debug)
+			toastWrapper('w: ' + windowData.width + ' h: ' + windowData.height, 'success', {
+				icon: '⚠️',
+				duration: 5000
+			});
+
+		let gennedX = Math.floor(Math.random() * (window.innerWidth - windowData.width || 400));
+		let gennedY = Math.floor(Math.random() * (window.innerHeight - windowData.height || 200));
+
+		if (debug)
+			toastWrapper('gennedX: ' + gennedX + ' gennedY: ' + gennedY, 'success', {
+				icon: '⚠️',
+				duration: 5000
+			});
+
+		if (gennedX + windowData.width > screenW) gennedX = screenW / 2 - windowData.width / 2;
+		if (gennedY + windowData.height > screenH) gennedY = screenH - windowData.height;
+
+		if (debug)
+			toastWrapper('new gennedX: ' + gennedX + ' gennedY: ' + gennedY, 'success', {
+				icon: '⚠️',
+				duration: 5000
+			});
 
 		const newWindow = {
 			component: windowData.component,
 			title: windowData.title,
 			id: uuidv4(),
-			x: Math.floor(Math.random() * (window.innerWidth - windowData.width || 400)),
-			y: Math.floor(Math.random() * (window.innerHeight - windowData.height || 200)),
+			x: gennedX,
+			y: gennedY,
 			width: windowData.width,
 			height: windowData.height,
-			passToComponent: windowData.passToComponent || {}
+			passToComponent: windowData.passToComponent || {},
+
+			icon: windowData.icon || ''
 		};
 
 		if (debug)
@@ -68,6 +99,20 @@
 		setTimeout(() => {
 			openWindows = [...openWindows, newWindow];
 		}, 1);
+	}
+
+	function focusWindow(id) {
+		for (let i = 0; i < openWindows.length; i++) {
+			if (openWindows[i].id === id) {
+				openWindows[i].focus = true;
+
+				setTimeout(() => {
+					openWindows[i].focus = false;
+				}, 1);
+
+				break;
+			}
+		}
 	}
 
 	let overlay = true;
@@ -211,15 +256,16 @@ My birthday is on the 22nd of November.
 	{#each openWindows as window}
 		<Window
 			bind:windows={openWindows}
+			bind:focus={window.focus}
 			{debug}
 			{getNextZIndex}
 			{toastWrapper}
 			title={window.title}
 			id={window.id}
-			x={window.x}
-			y={window.y}
-			width={window.width}
-			height={window.height}
+			initialX={window.x}
+			initialY={window.y}
+			initialWidth={window.width}
+			initialHeight={window.height}
 		>
 			<svelte:component
 				this={window.component}
@@ -279,6 +325,28 @@ My birthday is on the 22nd of November.
 		>
 			<Fa icon={faWindows} size="2x" />
 		</button>
+		<div class="openApps">
+			{#each openWindows as window}
+				<button
+					class="openApp"
+					transition:fly={{ y: 100, duration: 200 }}
+					on:click={() => {
+						focusWindow(window.id);
+					}}
+				>
+					{#if window.icon}
+						{#if typeof window.icon === 'string'}
+							<img src={window.icon} alt="icon" />
+						{:else}
+							<span class="desktopIcon-fa">
+								<Fa icon={window.icon} alt="icon" color={window.color || 'white'} /></span
+							>
+						{/if}
+					{/if}
+				</button>
+			{/each}
+		</div>
+
 		<div class="right">
 			<button
 				class="volume"
@@ -566,6 +634,14 @@ My birthday is on the 22nd of November.
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	}
 
+	.loading {
+		color: white;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		display: flex;
+		justify-content: center;
+		font-size: 1.5em;
+	}
+
 	.sound {
 		background: transparent;
 		border: none;
@@ -578,6 +654,40 @@ My birthday is on the 22nd of November.
 		border-radius: 5px;
 	}
 	.sound:hover {
+		background-color: #357ec7;
+	}
+
+	.openApps {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		margin-right: 30px;
+	}
+
+	.openApp {
+		background: transparent;
+		border: none;
+		color: white;
+		cursor: pointer;
+		height: 100%;
+		padding-left: 15px;
+		padding-right: 15px;
+		transition: background-color 0.2s;
+		border-radius: 5px;
+	}
+
+	.openApp img {
+		width: 30px;
+		height: 30px;
+		object-fit: contain;
+	}
+
+	.openApp span {
+		font-size: 30px;
+		width: 30px;
+	}
+
+	.openApp:hover {
 		background-color: #357ec7;
 	}
 </style>

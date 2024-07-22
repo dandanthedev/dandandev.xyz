@@ -2,10 +2,7 @@
 	import { faWindows, faGithub } from '@fortawesome/free-brands-svg-icons';
 	import { onDestroy, onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
-	import Explorer from '$lib/Explorer.svelte';
 	import Window from '$lib/Window.svelte';
-	import Text from '$lib/Text.svelte';
-	import SendMessage from '$lib/SendMessage.svelte';
 	import { v4 as uuidv4 } from 'uuid';
 	import Fa from 'svelte-fa';
 	import toast, { Toaster } from 'svelte-french-toast';
@@ -13,9 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { faArrowLeft, faCheckCircle, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 	import { getList, play } from '$lib/sockets/sounds.js';
-	import Choices from '../../lib/Choices.svelte';
-	import ChoicesResults from '../../lib/ChoicesResults.svelte';
-	import { getScreenSize } from '$lib/utils.js';
+	import { getScreenSize, availableComponents } from '$lib/utils.js';
 	let zindex = 1;
 	let volume = 0.5;
 
@@ -47,7 +42,6 @@
 			if (!windowData.component) return toastWrapper('No component specified', 'error');
 			if (!windowData.title) return toastWrapper('No title specified', 'error');
 		}
-		let window = windowData.component;
 
 		const { screenW, screenH } = getScreenSize();
 		if (!windowData.width) windowData.width = 400;
@@ -62,8 +56,8 @@
 				duration: 5000
 			});
 
-		let gennedX = Math.floor(Math.random() * (window.innerWidth - windowData.width || 400));
-		let gennedY = Math.floor(Math.random() * (window.innerHeight - windowData.height || 200));
+		let gennedX = Math.floor(Math.random() * (globalThis.innerWidth - windowData.width || 400));
+		let gennedY = Math.floor(Math.random() * (globalThis.innerHeight - windowData.height || 200));
 
 		if (debug)
 			toastWrapper('gennedX: ' + gennedX + ' gennedY: ' + gennedY, 'success', {
@@ -196,14 +190,14 @@
 		{
 			icon: $preloadedAssets.explorer,
 			text: 'Explorer',
-			component: Explorer,
+			component: 'Explorer',
 			width: 500,
 			height: 600
 		},
 		{
 			icon: $preloadedAssets.txt,
 			text: 'about.txt',
-			component: Text,
+			component: 'Text',
 			width: 700,
 			height: 400,
 			passToComponent: {
@@ -223,7 +217,7 @@ My birthday is on the 22nd of November.
 		{
 			icon: $preloadedAssets.txt,
 			text: 'contact.txt',
-			component: Text,
+			component: 'Text',
 			width: 400,
 			height: 200,
 			passToComponent: {
@@ -247,7 +241,7 @@ My birthday is on the 22nd of November.
 		{
 			icon: $preloadedAssets.chrome,
 			text: 'message.html',
-			component: SendMessage,
+			component: 'SendMessage',
 			width: 400,
 			height: 200
 		},
@@ -269,21 +263,21 @@ My birthday is on the 22nd of November.
 		{
 			icon: faCheckCircle,
 			text: 'Thing Battle',
-			component: Choices,
+			component: 'Choices',
 			width: 700,
 			height: 400
 		},
 		...new Array(100).fill(null).map(() => ({
 			icon: faCheckCircle,
 			text: 'Thing Battle',
-			component: Choices,
+			component: 'Choices',
 			width: 700,
 			height: 400
 		})),
 		{
 			icon: $preloadedAssets.excel,
 			text: 'thingbattleresults.xslx',
-			component: ChoicesResults,
+			component: 'ChoicesResults',
 			width: 800,
 			height: 400
 		},
@@ -303,7 +297,6 @@ My birthday is on the 22nd of November.
 			}
 		}
 	];
-
 	desktopIcons.forEach((i) => (i.id = uuidv4()));
 
 	let openWindows = [];
@@ -456,6 +449,7 @@ My birthday is on the 22nd of November.
 			bind:windows={openWindows}
 			bind:focus={window.focus}
 			bind:currentlyFocused={window.currentlyFocused}
+			bind:zIndex={window.zIndex}
 			{debug}
 			{getNextZIndex}
 			{toastWrapper}
@@ -467,7 +461,7 @@ My birthday is on the 22nd of November.
 			initialHeight={window.height}
 		>
 			<svelte:component
-				this={window.component}
+				this={availableComponents[window.component]}
 				{openWindow}
 				passToComponent={window.passToComponent}
 				{toastWrapper}

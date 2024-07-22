@@ -33,7 +33,7 @@
 
 	let fullscreen = false;
 
-	let zIndex;
+	export let zIndex;
 
 	let hidden = false;
 

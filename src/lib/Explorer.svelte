@@ -14,7 +14,6 @@
 		faStar
 	} from '@fortawesome/free-solid-svg-icons';
 	import Fa from 'svelte-fa';
-	import Text from '$lib/Text.svelte';
 	const projects = [
 		{
 			name: 'Starling Days',
@@ -112,7 +111,7 @@
 			class="item"
 			on:click={() => {
 				openWindow({
-					component: Text,
+					component: 'Text',
 					title: project.name,
 					height: 230,
 					passToComponent: {

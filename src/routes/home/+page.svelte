@@ -313,8 +313,21 @@ My birthday is on the 22nd of November.
 
 	let endX = null;
 	let endY = null;
+	let desktopFocus = false;
 
 	function mouseDown(e) {
+		console.log(e.target.classList.toString());
+		if (
+			!e.target.classList.contains('backgroundImage') &&
+			!e.target.classList.contains('desktopIcons') &&
+			!document.querySelector('.desktopIcons').contains(e.target)
+		) {
+			desktopFocus = false;
+			return;
+		}
+
+		desktopFocus = true;
+
 		startX = e.clientX;
 		startY = e.clientY;
 
@@ -341,26 +354,6 @@ My birthday is on the 22nd of November.
 		endY = null;
 
 		updateSelection();
-	}
-
-	function keyPress(e) {
-		if (e.key === 'Enter') {
-			//open all selected icons
-			for (const desktopIcon of desktopIcons) {
-				if (desktopIcon.clicked) {
-					if (desktopIcon.run) desktopIcon.run();
-					else
-						openWindow({
-							...desktopIcon,
-							title: desktopIcon.text
-						});
-					desktopIcon.clicked = false;
-				}
-			}
-
-			//focus the body
-			document.body.focus();
-		}
 	}
 
 	let display = false;
@@ -407,6 +400,27 @@ My birthday is on the 22nd of November.
 	onMount(() => {
 		desktopIconElements = document.querySelectorAll('.desktopIcon');
 	});
+
+	function keyPress(e) {
+		if (e.key === 'Enter') {
+			if (!desktopFocus) return;
+			//open all selected icons
+			for (const desktopIcon of desktopIcons) {
+				if (desktopIcon.clicked) {
+					if (desktopIcon.run) desktopIcon.run();
+					else
+						openWindow({
+							...desktopIcon,
+							title: desktopIcon.text
+						});
+					desktopIcon.clicked = false;
+				}
+			}
+
+			//focus the body
+			document.body.focus();
+		}
+	}
 </script>
 
 <svelte:window
@@ -436,6 +450,7 @@ My birthday is on the 22nd of November.
 		<Window
 			bind:windows={openWindows}
 			bind:focus={window.focus}
+			bind:currentlyFocused={window.currentlyFocused}
 			{debug}
 			{getNextZIndex}
 			{toastWrapper}
@@ -459,6 +474,7 @@ My birthday is on the 22nd of November.
 		{#each desktopIcons as icon}
 			<button
 				class="desktopIcon"
+				data-desktopIcon={icon.id}
 				on:click={(e) => {
 					//unclick all icons if not holding ctrl
 					if (!e.ctrlKey)

@@ -23,6 +23,8 @@
 	export let toastWrapper;
 	export let focus;
 
+	export let currentlyFocused = false;
+
 	//just to make sure no random linking jazz happens
 	let width = parseInt(initialWidth);
 	let height = parseInt(initialHeight);
@@ -56,6 +58,14 @@
 </script>
 
 <div
+	on:focus={() => {
+		currentlyFocused = true;
+		console.log('focus');
+	}}
+	on:blur={() => {
+		currentlyFocused = false;
+		console.log('blur');
+	}}
 	use:draggable={{
 		handle: '.header',
 		position: {

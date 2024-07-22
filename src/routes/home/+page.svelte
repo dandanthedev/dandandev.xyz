@@ -480,6 +480,7 @@ My birthday is on the 22nd of November.
 					{/each}
 				{/await}
 			</div>
+			<p class="note">btw: these play for everyone currently on the site, including me :)</p>
 		</div>
 	{/if}
 </div>
@@ -774,5 +775,15 @@ My birthday is on the 22nd of November.
 
 	.openApp:hover {
 		background-color: #357ec7;
+	}
+
+	.note {
+		font-size: 0.8em;
+		color: white;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		padding-left: 10px;
+		padding-right: 10px;
 	}
 </style>

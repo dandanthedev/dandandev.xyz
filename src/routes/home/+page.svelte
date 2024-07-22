@@ -138,31 +138,37 @@
 
 	onMount(async () => {
 		const tracks = [
-			'youtube_1ukg4E75HBU_audio.mp3',
-			'youtube_1w0gXmE2CuY_audio.mp3',
-			'youtube_2SYYM78rjYQ_audio.mp3',
-			'youtube_9NcPvmk4vfo_audio.mp3',
-			'youtube_aDlNMawir4o_audio.mp3',
-			'youtube_brDbHtkZ2qI_audio.mp3',
-			'youtube_g4mSH9xUMbc_audio.mp3',
-			'youtube_G664rCvJuls_audio.mp3',
-			'youtube_IbFEEfNE1YQ_audio.mp3',
-			'youtube_j-uVUDwqyYk_audio.mp3',
-			'youtube_nRerWS_yEUw_audio.mp3',
-			'youtube_QuaTAcT-nWQ_audio.mp3',
-			'youtube_rI2yN0f6C8o_audio.mp3',
-			'youtube_TwQRpN2fLbs_audio.mp3',
-			'youtube_Uu8WP-Se90w_audio.mp3',
-			'youtube_VM2UJ6E5D-U_audio.mp3',
-			'youtube_VMM2y2a3fl0_audio.mp3',
-			'youtube_YXj4mVzAouU_audio.mp3'
+			'24K Magic.mp3 ',
+			'All Star (from Shrek).mp3 ',
+			'Animals.mp3 ',
+			'Blue (Da Ba Dee).mp3 ',
+			'Cake by the Ocean.mp3 ',
+			"Can't Stop The Feeling.mp3 ",
+			'Cheerleader.mp3 ',
+			'Eye of the Tiger.mp3 ',
+			'Get Lucky.mp3 ',
+			'Harder Better Faster Stronger.mp3 ',
+			'Immortals.mp3',
+			'Never Gonna Give You Up.mp3 ',
+			'Shape Of You.mp3 ',
+			'Take On Me.mp3 ',
+			'Timber.mp3 ',
+			'Turn Down For What.mp3 ',
+			'Up.mp3 ',
+			'Where Are U Now.mp3'
 		];
 
 		async function playRandomTrack() {
+			if (overlay) return;
+
 			await new Promise((r) => setTimeout(r, 3000));
 			const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
 			currentAudio = new Audio(`/tracks/${randomTrack}`);
 			currentAudio.play();
+
+			toastWrapper('Now playing: ' + randomTrack, 'success', {
+				duration: 50000
+			});
 
 			currentAudio.addEventListener('ended', playRandomTrack);
 
@@ -176,8 +182,14 @@
 		playRandomTrack();
 	});
 
-	onDestroy(() => {
-		if (currentAudio) currentAudio.pause();
+	onDestroy(async () => {
+		if (currentAudio) {
+			while (currentAudio.volume > 0.1) {
+				currentAudio.volume -= 0.1;
+				await new Promise((r) => setTimeout(r, 100));
+			}
+			currentAudio.pause();
+		}
 	});
 
 	const desktopIcons = [

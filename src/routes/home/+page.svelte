@@ -369,13 +369,18 @@ My birthday is on the 22nd of November.
 			return;
 		}
 
+		width = Math.abs(startX - endX);
+		height = Math.abs(startY - endY);
+
+		if (Math.sqrt(width * width + height * height) < 10) {
+			display = false;
+			return;
+		}
+
 		display = true;
 
 		topLeftX = Math.min(startX, endX);
 		topLeftY = Math.min(startY, endY);
-
-		width = Math.abs(startX - endX);
-		height = Math.abs(startY - endY);
 
 		let selectedDesktopIconElements = new WeakSet();
 

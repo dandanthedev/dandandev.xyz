@@ -1,6 +1,6 @@
 <script>
 	import { faWindows, faGithub } from '@fortawesome/free-brands-svg-icons';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import Explorer from '$lib/Explorer.svelte';
 	import Window from '$lib/Window.svelte';
@@ -17,6 +17,8 @@
 	import ChoicesResults from '../../lib/ChoicesResults.svelte';
 	import { getScreenSize } from '$lib/utils.js';
 	let zindex = 1;
+
+	let currentAudio;
 
 	let time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
 	let date = new Date().toLocaleDateString('nl-NL', {
@@ -132,6 +134,50 @@
 				day: 'numeric'
 			});
 		}, 1000);
+	});
+
+	onMount(async () => {
+		const tracks = [
+			'youtube_1ukg4E75HBU_audio.mp3',
+			'youtube_1w0gXmE2CuY_audio.mp3',
+			'youtube_2SYYM78rjYQ_audio.mp3',
+			'youtube_9NcPvmk4vfo_audio.mp3',
+			'youtube_aDlNMawir4o_audio.mp3',
+			'youtube_brDbHtkZ2qI_audio.mp3',
+			'youtube_g4mSH9xUMbc_audio.mp3',
+			'youtube_G664rCvJuls_audio.mp3',
+			'youtube_IbFEEfNE1YQ_audio.mp3',
+			'youtube_j-uVUDwqyYk_audio.mp3',
+			'youtube_nRerWS_yEUw_audio.mp3',
+			'youtube_QuaTAcT-nWQ_audio.mp3',
+			'youtube_rI2yN0f6C8o_audio.mp3',
+			'youtube_TwQRpN2fLbs_audio.mp3',
+			'youtube_Uu8WP-Se90w_audio.mp3',
+			'youtube_VM2UJ6E5D-U_audio.mp3',
+			'youtube_VMM2y2a3fl0_audio.mp3',
+			'youtube_YXj4mVzAouU_audio.mp3'
+		];
+
+		async function playRandomTrack() {
+			await new Promise((r) => setTimeout(r, 3000));
+			const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
+			currentAudio = new Audio(`/tracks/${randomTrack}`);
+			currentAudio.play();
+
+			currentAudio.addEventListener('ended', playRandomTrack);
+
+			while (currentAudio.currentTime === 0) {
+				//AUDIO POLICY JAZZ
+				await new Promise((r) => setTimeout(r, 100));
+				currentAudio.play();
+			}
+		}
+
+		playRandomTrack();
+	});
+
+	onDestroy(() => {
+		if (currentAudio) currentAudio.pause();
 	});
 
 	const desktopIcons = [

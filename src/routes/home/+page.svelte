@@ -15,7 +15,7 @@
 	import { getList, play } from '$lib/sockets/sounds.js';
 	import Choices from '../../lib/Choices.svelte';
 	import ChoicesResults from '../../lib/ChoicesResults.svelte';
-	import { getScreenSize } from '$lib/utils.js';
+	import { getScreenSize, doOverlap } from '$lib/utils.js';
 	let zindex = 1;
 	let volume = 0.5;
 
@@ -273,6 +273,13 @@ My birthday is on the 22nd of November.
 			width: 700,
 			height: 400
 		},
+		...new Array(100).fill(null).map(() => ({
+			icon: faCheckCircle,
+			text: 'Thing Battle',
+			component: Choices,
+			width: 700,
+			height: 400
+		})),
 		{
 			icon: $preloadedAssets.excel,
 			text: 'thingbattleresults.xslx',
@@ -336,6 +343,26 @@ My birthday is on the 22nd of November.
 		updateSelection();
 	}
 
+	function keyPress(e) {
+		if (e.key === 'Enter') {
+			//open all selected icons
+			for (const desktopIcon of desktopIcons) {
+				if (desktopIcon.clicked) {
+					if (desktopIcon.run) desktopIcon.run();
+					else
+						openWindow({
+							...desktopIcon,
+							title: desktopIcon.text
+						});
+					desktopIcon.clicked = false;
+				}
+			}
+
+			//focus the body
+			document.body.focus();
+		}
+	}
+
 	let display = false;
 	let topLeftX = 0;
 	let topLeftY = 0;
@@ -356,10 +383,40 @@ My birthday is on the 22nd of November.
 
 		width = Math.abs(startX - endX);
 		height = Math.abs(startY - endY);
+
+		let selectedDesktopIconElements = [];
+
+		for (const desktopIconElement of desktopIconElements) {
+			const rect = desktopIconElement.getBoundingClientRect();
+
+			if (
+				topLeftX < rect.left + rect.width &&
+				topLeftX + width > rect.left &&
+				topLeftY < rect.top + rect.height &&
+				topLeftY + height > rect.top
+			) {
+				selectedDesktopIconElements.push(desktopIconElement);
+			}
+		}
+
+		for (const index in desktopIconElements)
+			desktopIcons[index].clicked = selectedDesktopIconElements.includes(
+				desktopIconElements[index]
+			);
 	}
+
+	let desktopIconElements = [];
+	onMount(() => {
+		desktopIconElements = document.querySelectorAll('.desktopIcon');
+	});
 </script>
 
-<svelte:window on:mousedown={mouseDown} on:mouseup={mouseUp} on:mousemove={mouseMove} />
+<svelte:window
+	on:mousedown={mouseDown}
+	on:mouseup={mouseUp}
+	on:mousemove={mouseMove}
+	on:keypress={keyPress}
+/>
 
 <div
 	class="desktopSelection"
@@ -404,12 +461,13 @@ My birthday is on the 22nd of November.
 		{#each desktopIcons as icon}
 			<button
 				class="desktopIcon"
-				on:click={() => {
-					//unclick all icons
-					desktopIcons.forEach((i) => {
-						if (i.id === icon.id) return;
-						i.clicked = false;
-					});
+				on:click={(e) => {
+					//unclick all icons if not holding ctrl
+					if (!e.ctrlKey)
+						desktopIcons.forEach((i) => {
+							if (i.id === icon.id) return;
+							i.clicked = false;
+						});
 
 					if (icon.clicked) {
 						if (icon.run) icon.run();
@@ -571,6 +629,8 @@ My birthday is on the 22nd of November.
 
 		background-color: #258bea37;
 		border: 1px solid #015da3;
+
+		pointer-events: none;
 	}
 
 	.blackOverlay {

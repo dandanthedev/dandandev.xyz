@@ -300,7 +300,73 @@ My birthday is on the 22nd of November.
 	desktopIcons.forEach((i) => (i.id = uuidv4()));
 
 	let openWindows = [];
+
+	let startX = null;
+	let startY = null;
+
+	let endX = null;
+	let endY = null;
+
+	function mouseDown(e) {
+		startX = e.clientX;
+		startY = e.clientY;
+
+		endX = startX;
+		endY = startY;
+
+		updateSelection();
+	}
+
+	function mouseMove(e) {
+		if (!startX || !startY) return;
+
+		endX = e.clientX;
+		endY = e.clientY;
+
+		updateSelection();
+	}
+
+	function mouseUp(e) {
+		startX = null;
+		startY = null;
+
+		endX = null;
+		endY = null;
+
+		updateSelection();
+	}
+
+	let display = false;
+	let topLeftX = 0;
+	let topLeftY = 0;
+
+	let width = 0;
+	let height = 0;
+
+	function updateSelection() {
+		if (!startX || !startY || !endX || !endY) {
+			display = false;
+			return;
+		}
+
+		display = true;
+
+		topLeftX = Math.min(startX, endX);
+		topLeftY = Math.min(startY, endY);
+
+		width = Math.abs(startX - endX);
+		height = Math.abs(startY - endY);
+	}
 </script>
+
+<svelte:window on:mousedown={mouseDown} on:mouseup={mouseUp} on:mousemove={mouseMove} />
+
+<div
+	class="desktopSelection"
+	style="display: {display
+		? 'block'
+		: 'none'}; top: {topLeftY}px; left: {topLeftX}px; width: {width}px; height: {height}px;"
+></div>
 
 <span class="toaster">
 	<Toaster />
@@ -493,6 +559,20 @@ My birthday is on the 22nd of November.
 </div>
 
 <style>
+	.desktopSelection {
+		z-index: 10;
+		position: fixed;
+
+		top: 0;
+		left: 0;
+
+		width: 500px;
+		height: 500px;
+
+		background-color: #258bea37;
+		border: 1px solid #015da3;
+	}
+
 	.blackOverlay {
 		position: fixed;
 		top: 0;

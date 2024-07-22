@@ -165,6 +165,7 @@
 			await new Promise((r) => setTimeout(r, 3000));
 			const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
 			currentAudio = new Audio(`/tracks/${randomTrack}`);
+			currentAudio.volume = volume;
 			currentAudio.play();
 
 			toastWrapper('Now playing: ' + randomTrack, 'success');

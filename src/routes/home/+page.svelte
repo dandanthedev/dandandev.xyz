@@ -17,6 +17,7 @@
 	import ChoicesResults from '../../lib/ChoicesResults.svelte';
 	import { getScreenSize } from '$lib/utils.js';
 	let zindex = 1;
+	let volume = 0.5;
 
 	let currentAudio;
 
@@ -451,20 +452,33 @@ My birthday is on the 22nd of November.
 	{/if}
 	{#if soundsMenu}
 		<div class="soundsMenu" transition:fly={{ y: 5, duration: 200 }}>
-			{#await getList()}
-				<p class="loading">Loading...</p>
-			{:then list}
-				{#each list as sound}
-					<button
-						class="sound"
-						on:click={() => {
-							play(sound);
-						}}
-					>
-						<p>{sound}</p>
-					</button>
-				{/each}
-			{/await}
+			<input
+				type="range"
+				min="0"
+				max="1"
+				step="0.01"
+				bind:value={volume}
+				on:input={() => {
+					currentAudio.volume = volume;
+				}}
+				class="volumeSlider"
+			/>
+			<div class="soundList">
+				{#await getList()}
+					<p class="loading">Loading...</p>
+				{:then list}
+					{#each list as sound}
+						<button
+							class="sound"
+							on:click={() => {
+								play(sound);
+							}}
+						>
+							<p>{sound}</p>
+						</button>
+					{/each}
+				{/await}
+			</div>
 		</div>
 	{/if}
 </div>
@@ -678,9 +692,7 @@ My birthday is on the 22nd of November.
 	.soundsMenu {
 		position: fixed;
 		bottom: 40px;
-		right: 0;
-		width: 330px;
-		height: 80px;
+		right: 10px;
 		background-color: #00426c;
 
 		border-radius: 5px;
@@ -688,6 +700,22 @@ My birthday is on the 22nd of November.
 		border-bottom-right-radius: 0;
 
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+		/*overflow to newline*/
+		white-space: pre-line;
+	}
+
+	.volumeSlider {
+		width: 90%;
+		display: block;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 10px;
+	}
+
+	.soundList {
+		height: calc(100% - 40px);
+		overflow-y: auto;
 	}
 
 	.loading {

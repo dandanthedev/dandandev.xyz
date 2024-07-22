@@ -480,7 +480,7 @@ My birthday is on the 22nd of November.
 			<button
 				class="desktopIcon"
 				data-desktopIcon={icon.id}
-				on:click={(e) => {
+				on:mousedown={(e) => {
 					//unclick all icons if not holding ctrl
 					if (!e.ctrlKey)
 						desktopIcons.forEach((i) => {

@@ -166,9 +166,7 @@
 			currentAudio = new Audio(`/tracks/${randomTrack}`);
 			currentAudio.play();
 
-			toastWrapper('Now playing: ' + randomTrack, 'success', {
-				duration: 50000
-			});
+			toastWrapper('Now playing: ' + randomTrack, 'success');
 
 			currentAudio.addEventListener('ended', playRandomTrack);
 

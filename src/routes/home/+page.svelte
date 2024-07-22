@@ -154,7 +154,7 @@
 			'Take On Me.mp3 ',
 			'Timber.mp3 ',
 			'Turn Down For What.mp3 ',
-			'Up.mp3 ',
+			'Uptown Funk.mp3 ',
 			'Where Are U Now.mp3'
 		];
 

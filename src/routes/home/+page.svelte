@@ -115,7 +115,6 @@
 
 				// break;
 
-				//TODO: hier nog even over nadenken, volgensmij vergeet ik wat
 				if (currentFocus === id) {
 					openWindows[i].focus = true;
 					currentFocus = null;
@@ -123,11 +122,12 @@
 						openWindows[i].focus = false;
 					}, 1);
 				} else {
-					openWindows[i].focus = true;
-					currentFocus = null;
+					currentFocus = id;
+					//bring to top
+					openWindows[i].comeToTop = true;
 					setTimeout(() => {
-						openWindows[i].focus = false;
-					}, 1);
+						openWindows[i].comeToTop = false;
+					}, 2);
 				}
 			}
 		}
@@ -371,7 +371,10 @@ My birthday is on the 22nd of November.
 		}
 
 		setTimeout(() => {
-			if (!internal_foundCurrentFocus) currentFocus = null;
+			if (!internal_foundCurrentFocus) {
+				//if no window has comeToTop, then set currentFocus to null
+				if (openWindows.every((w) => !w.comeToTop)) lcurrentFocus = null;
+			}
 		}, 1);
 
 		startX = null;
@@ -487,6 +490,7 @@ My birthday is on the 22nd of November.
 			bind:focus={window.focus}
 			bind:currentlyFocused={window.currentlyFocused}
 			bind:zIndex={window.zIndex}
+			bind:comeToTop={window.comeToTop}
 			{debug}
 			{getNextZIndex}
 			{toastWrapper}

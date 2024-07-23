@@ -26,6 +26,7 @@
 	export let focus;
 
 	export let currentlyFocused = false;
+	export let comeToTop = false;
 
 	//just to make sure no random linking jazz happens
 	let width = parseInt(initialWidth);
@@ -50,6 +51,10 @@
 			hidden = false;
 			focus = false;
 		}
+	}
+
+	$: if (comeToTop) {
+		zIndex = getNextZIndex();
 	}
 
 	onMount(() => {

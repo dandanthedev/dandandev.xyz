@@ -1,5 +1,7 @@
 <script>
 	import { draggable } from '@neodrag/svelte';
+	import { createEventDispatcher } from 'svelte';
+	const dispatch = createEventDispatcher();
 	import Fa from 'svelte-fa';
 	import {
 		faMinus,
@@ -83,6 +85,7 @@
 		}
 	}}
 	class="window"
+	data-windowId={id}
 	style="width: {width}px; height: {height}px; left: {x}px; top: {y}px; z-index: {zIndex}; opacity: {hidden
 		? 0
 		: 1}; pointer-events: {hidden ? 'none' : 'auto'};"
@@ -106,6 +109,7 @@
 			class="icon"
 			on:click={() => {
 				hidden = true;
+				dispatch('windowUnfocused', id);
 			}}
 		>
 			<Fa icon={faMinus} />
@@ -143,6 +147,7 @@
 			class="icon"
 			on:click={async () => {
 				hidden = true;
+				dispatch('windowUnfocused', id);
 				await new Promise((r) => setTimeout(r, 201));
 				windows = windows.filter((w) => w.id !== id);
 				if (debug)

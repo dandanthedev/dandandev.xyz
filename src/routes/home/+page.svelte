@@ -105,13 +105,30 @@
 	function focusWindow(id) {
 		for (let i = 0; i < openWindows.length; i++) {
 			if (openWindows[i].id === id) {
-				openWindows[i].focus = true;
+				// openWindows[i].focus = true;
 
-				setTimeout(() => {
-					openWindows[i].focus = false;
-				}, 1);
+				// currentFocus = openWindows[i].id;
 
-				break;
+				// setTimeout(() => {
+				// 	openWindows[i].focus = false;
+				// }, 1);
+
+				// break;
+
+				//TODO: hier nog even over nadenken, volgensmij vergeet ik wat
+				if (currentFocus === id) {
+					openWindows[i].focus = true;
+					currentFocus = null;
+					setTimeout(() => {
+						openWindows[i].focus = false;
+					}, 1);
+				} else {
+					openWindows[i].focus = true;
+					currentFocus = null;
+					setTimeout(() => {
+						openWindows[i].focus = false;
+					}, 1);
+				}
 			}
 		}
 	}
@@ -305,8 +322,9 @@ My birthday is on the 22nd of November.
 	let endY = null;
 	let desktopFocus = false;
 
+	let currentFocus = null;
+
 	function mouseDown(e) {
-		console.log(e.target.classList.toString());
 		if (
 			!e.target.classList.contains('backgroundImage') &&
 			!e.target.classList.contains('desktopIcons') &&
@@ -337,6 +355,25 @@ My birthday is on the 22nd of November.
 	}
 
 	function mouseUp(e) {
+		let internal_foundCurrentFocus = false;
+		//check if any of the parents of the element have data-windowid
+		let parent = e.target;
+		while (parent) {
+			if (debug) console.log(parent.classList.toString(), parent.dataset);
+			if (parent.dataset.windowid) {
+				setTimeout(() => {
+					currentFocus = parent.dataset.windowid;
+				}, 1);
+				internal_foundCurrentFocus = true;
+				break;
+			}
+			parent = parent.parentElement;
+		}
+
+		setTimeout(() => {
+			if (!internal_foundCurrentFocus) currentFocus = null;
+		}, 1);
+
 		startX = null;
 		startY = null;
 
@@ -441,6 +478,9 @@ My birthday is on the 22nd of November.
 {/if}
 
 <div class="backgroundImage" style="background-image: url({$preloadedAssets.background});">
+	{#if debug}
+		<p class="currentFocus">Current focus: {currentFocus}</p>
+	{/if}
 	{#each openWindows as window}
 		<Window
 			bind:windows={openWindows}
@@ -456,6 +496,11 @@ My birthday is on the 22nd of November.
 			initialY={window.y}
 			initialWidth={window.width}
 			initialHeight={window.height}
+			on:windowUnfocused={(e) => {
+				if (currentFocus === e.detail) {
+					currentFocus = null;
+				}
+			}}
 		>
 			<svelte:component
 				this={availableComponents[window.component]}
@@ -627,6 +672,13 @@ My birthday is on the 22nd of November.
 </div>
 
 <style>
+	.currentFocus {
+		position: fixed;
+		top: 0;
+		right: 10px;
+		color: white;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+	}
 	.desktopSelection {
 		z-index: 10;
 		position: fixed;

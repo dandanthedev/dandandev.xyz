@@ -55,8 +55,13 @@
 		//connect to sounds server
 		loadingText = 'Connecting to soundserver...';
 		await initSocket();
+
 		overlay = true;
 		await new Promise((r) => setTimeout(r, 2000)); //wait for fadeout
+
+		//TROLLS
+		if (Math.random() < 0.2) return goto('/trolls/update');
+
 		goto('/home');
 	}
 

@@ -63,8 +63,8 @@
 		await new Promise((r) => setTimeout(r, 2000)); //wait for fadeout
 
 		//TROLLS
-		if (Math.random() < 0.2) return goto('/trolls/update');
-		if (Math.random() < 0.2) return goto('/trolls/11');
+		if (Math.random() < 0.1) return goto('/trolls/update');
+		if (Math.random() < 0.1) return goto('/trolls/11');
 
 		goto('/home');
 	}

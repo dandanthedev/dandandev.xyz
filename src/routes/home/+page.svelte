@@ -140,7 +140,7 @@
 		else overlay = false;
 
 		const audio = new Audio($preloadedAssets.bootup);
-		audio.play();
+		if (!overlay) audio.play();
 
 		setInterval(() => {
 			time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });

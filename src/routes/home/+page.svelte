@@ -57,10 +57,12 @@
 				duration: 5000
 			});
 
+		if (debug) console.log(screenW, screenH);
+		if (debug) console.log(windowData.width, windowData.height);
 		//generate random x and y so that the entire window is visible, and atleast 50px from either sides of screen
 		let gennedX = Math.floor(Math.random() * (screenW - windowData.width - 100));
 		let gennedY = Math.floor(Math.random() * (screenH - windowData.height - 100));
-
+		if (debug) console.log(gennedX, gennedY);
 		if (debug)
 			toastWrapper('gennedX: ' + gennedX + ' gennedY: ' + gennedY, 'success', {
 				icon: '⚠️',
@@ -654,11 +656,16 @@ My birthday is on the 22nd of November.
 	.backgroundImage {
 		background-size: cover;
 		background-position: center;
+		background-repeat: no-repeat;
+		background-attachment: fixed;
 		position: fixed;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
+
+		max-width: 100vw;
+		max-height: 100vh;
 
 		/*to prevent custom dragging from being interfered with*/
 		user-drag: none;

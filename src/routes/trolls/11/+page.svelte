@@ -2,10 +2,13 @@
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
+	import { preloadedAssets } from '$lib/stores.js';
 
 	let overlay = true;
 	let video;
 	onMount(async () => {
+		if ($preloadedAssets.loading) goto('/');
+
 		video.muted = true;
 		video.play();
 
@@ -17,14 +20,14 @@
 {#if overlay}
 	<div class="overlay" out:fade={{ duration: 1000 }} in:fade={{ duration: 500 }}>
 		<video class="video" bind:this={video}>
-			<source src="/win11.mp4" type="video/mp4" />
+			<source src={$preloadedAssets.win11vid} type="video/mp4" />
 		</video>
 	</div>
 {/if}
 
 <div class="bg">
 	<h2 class="text">Microsoft recommends upgrading to Windows 11</h2>
-	<img src="/win11.jpg" alt="Windows 11" class="screenshot" />
+	<img src={$preloadedAssets.win11img} alt="Windows 11" class="screenshot" />
 
 	<p class="bulletPoints">
 		<span class="bulletPoint">• Less privacy</span>

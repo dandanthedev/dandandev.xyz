@@ -1,10 +1,13 @@
 <script>
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { preloadedAssets } from '$lib/stores.js';
 
 	let percent = 0;
 	let overlay = true;
 	onMount(async () => {
+		if ($preloadedAssets.loading) goto('/');
+
 		await new Promise((r) => setTimeout(r, 1000));
 		overlay = false;
 

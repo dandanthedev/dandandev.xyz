@@ -21,7 +21,10 @@
 		excel: '/icons/excel.png',
 
 		bootup: '/bootup.mp3',
-		shutdown: '/shutdown.mp3'
+		shutdown: '/shutdown.mp3',
+
+		win11img: '/win11.jpg',
+		win11vid: '/win11.mp4'
 	};
 
 	async function load() {

@@ -61,6 +61,7 @@
 
 		//TROLLS
 		if (Math.random() < 0.2) return goto('/trolls/update');
+		if (Math.random() < 0.2) return goto('/trolls/11');
 
 		goto('/home');
 	}

@@ -267,13 +267,6 @@ My birthday is on the 22nd of November.
 			width: 700,
 			height: 400
 		},
-		...new Array(100).fill(null).map(() => ({
-			icon: faCheckCircle,
-			text: 'Thing Battle',
-			component: 'Choices',
-			width: 700,
-			height: 400
-		})),
 		{
 			icon: $preloadedAssets.excel,
 			text: 'thingbattleresults.xslx',

@@ -38,12 +38,13 @@
 		});
 	}
 	export function openWindow(windowData) {
+		const { screenW, screenH } = getScreenSize();
+
 		if (debug) {
 			if (!windowData.component) return toastWrapper('No component specified', 'error');
 			if (!windowData.title) return toastWrapper('No title specified', 'error');
 		}
 
-		const { screenW, screenH } = getScreenSize();
 		if (!windowData.width) windowData.width = 400;
 		if (!windowData.height) windowData.height = 200;
 
@@ -56,8 +57,9 @@
 				duration: 5000
 			});
 
-		let gennedX = Math.floor(Math.random() * (globalThis.innerWidth - windowData.width || 400));
-		let gennedY = Math.floor(Math.random() * (globalThis.innerHeight - windowData.height || 200));
+		//generate random x and y so that the entire window is visible, and atleast 50px from either sides of screen
+		let gennedX = Math.floor(Math.random() * (screenW - windowData.width - 100));
+		let gennedY = Math.floor(Math.random() * (screenH - windowData.height - 100));
 
 		if (debug)
 			toastWrapper('gennedX: ' + gennedX + ' gennedY: ' + gennedY, 'success', {

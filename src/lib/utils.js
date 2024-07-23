@@ -5,11 +5,9 @@ import Choices from '$lib/Choices.svelte';
 import ChoicesResults from '$lib/ChoicesResults.svelte';
 
 export function getScreenSize() {
-    const screenW =
-        window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    const screenH =
-        window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-
+    //find with and height of element with class backgroundImage 
+    const screenW = document.querySelector('.backgroundImage').clientWidth;
+    const screenH = document.querySelector('.backgroundImage').clientHeight;
     return {
         screenW,
         screenH

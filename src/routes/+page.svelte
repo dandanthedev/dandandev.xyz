@@ -65,7 +65,7 @@
 		//TROLLS
 		const trolls = ['update', '11'];
 		if (Math.random() < 0.1) {
-			goto(`/trolls/${trolls[Math.floor(Math.random() * trolls.length)]}`);
+			return goto(`/trolls/${trolls[Math.floor(Math.random() * trolls.length)]}`);
 		}
 
 		goto('/home');

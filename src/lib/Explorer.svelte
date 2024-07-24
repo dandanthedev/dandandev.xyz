@@ -114,6 +114,7 @@
 					component: 'Text',
 					title: project.name,
 					height: 230,
+					icon: project.icon,
 					passToComponent: {
 						text: project.description,
 						buttons: [

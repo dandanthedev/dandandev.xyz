@@ -6,7 +6,7 @@
 	let running = false;
 	let totalGames = 0;
 
-	const choicesAPI = 'https://choices.daanschenkel.nl'; // TODO: env
+	const choicesAPI = 'https://thingbattle.dandandev.xyz'; // TODO: env
 
 	function loadImages() {
 		data.map((item) => {

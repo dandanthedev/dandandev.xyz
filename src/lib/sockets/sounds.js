@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const SOUNDS_URL = 'https://sounds.daanschenkel.nl';
+const SOUNDS_URL = 'https://sounds.dandandev.xyz';
 
 export let socket;
 

@@ -10,7 +10,7 @@
 	let voting = false;
 	let out = true;
 
-	const choicesAPI = 'https://choices.daanschenkel.nl'; // TODO: env
+	const choicesAPI = 'https://thingbattle.dandandev.xyz'; // TODO: env
 
 	async function random() {
 		let preload1 = new Image();

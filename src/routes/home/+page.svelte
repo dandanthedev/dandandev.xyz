@@ -468,7 +468,7 @@ My birthday is on the 22nd of November.
 	{#if debug}
 		<p class="currentFocus">Current focus: {currentFocus}</p>
 	{/if}
-	{#each openWindows as window}
+	{#each openWindows as window (window.id)}
 		<Window
 			bind:windows={openWindows}
 			bind:focus={window.focus}

@@ -59,24 +59,8 @@
 
 		if (debug) console.log(screenW, screenH);
 		if (debug) console.log(windowData.width, windowData.height);
-		//generate random x and y so that the entire window is visible, and atleast 50px from either sides of screen
-		let gennedX = Math.floor(Math.random() * (screenW - windowData.width - 100));
-		let gennedY = Math.floor(Math.random() * (screenH - windowData.height - 100));
-		if (debug) console.log(gennedX, gennedY);
-		if (debug)
-			toastWrapper('gennedX: ' + gennedX + ' gennedY: ' + gennedY, 'success', {
-				icon: '⚠️',
-				duration: 5000
-			});
-
-		if (gennedX + windowData.width > screenW) gennedX = screenW / 2 - windowData.width / 2;
-		if (gennedY + windowData.height > screenH) gennedY = screenH - windowData.height;
-
-		if (debug)
-			toastWrapper('new gennedX: ' + gennedX + ' gennedY: ' + gennedY, 'success', {
-				icon: '⚠️',
-				duration: 5000
-			});
+		let gennedX = 0;
+		let gennedY = 0;
 
 		const newWindow = {
 			component: windowData.component,

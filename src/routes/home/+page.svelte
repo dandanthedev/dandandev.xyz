@@ -11,6 +11,7 @@
 	import { faArrowLeft, faCheckCircle, faPowerOff } from '@fortawesome/free-solid-svg-icons';
 	import { getList, play } from '$lib/sockets/sounds.js';
 	import { getScreenSize, availableComponents } from '$lib/utils.js';
+	import { setToastWrapper } from '$lib/sockets/sounds.js';
 	let zindex = 1;
 	let volume = 0.5;
 
@@ -37,6 +38,9 @@
 			...options
 		});
 	}
+
+	setToastWrapper(toastWrapper);
+
 	export function openWindow(windowData) {
 		const { screenW, screenH } = getScreenSize();
 

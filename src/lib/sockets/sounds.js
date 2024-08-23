@@ -6,6 +6,11 @@ export let socket;
 
 let list = [];
 
+let _toastWrapper;
+
+export function setToastWrapper(toastWrapper) {
+    _toastWrapper = toastWrapper;
+}
 
 export function initSocket() {
     socket = io(SOUNDS_URL);
@@ -21,6 +26,10 @@ export function initSocket() {
 
         const audio = new Audio(url);
         audio.play();
+    });
+
+    socket.on('danny', function (data) {
+        _toastWrapper(`Message from Danny: ${data}`, 'success');
     });
 
     return new Promise((resolve) => {

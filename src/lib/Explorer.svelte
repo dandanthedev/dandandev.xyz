@@ -43,16 +43,9 @@
 		},
 		{
 			name: 'is-a.dev',
-			description: 'Developed an open-source register site, linked with analytics and web hosting.',
+			description: 'Developed an open-source register site, linked with analytics and web hosting. (NO LONGER ACTIVE)',
 			url: 'https://manage.is-a.dev',
 			icon: faGlobe
-		},
-		{
-			name: 'Cycling 4 Climate',
-			description:
-				'Doing voluntary work for Cycling 4 Climate. Managing GSuite/Google Workspace, servers, AWS, etc.',
-			url: 'https://cycling4climate.nl',
-			icon: faBicycle
 		},
 		{
 			name: 'League-FM',
@@ -98,7 +91,7 @@
 			name: 'WikiGame',
 			description: `I like to play games with my friends, and recently discovered Wikipedia speedrun games. I did find them a bit annoying to use though, so i decided to make my own.<br/>
 			<br/>It's simple, just name, code, article, play!`,
-			url: 'https://wikigame.daanschenkel.nl',
+			url: 'https://wikigame.dandandev.xyz',
 			icon: faNewspaper
 		}
 	];

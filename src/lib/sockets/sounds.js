@@ -29,7 +29,9 @@ export function initSocket() {
     });
 
     socket.on('danny', function (data) {
-        _toastWrapper(`Message from Danny: ${data}`, 'success');
+        _toastWrapper(`Message from Danny: ${data}`, 'success', {
+            duration: 6000
+        });
     });
 
     return new Promise((resolve) => {

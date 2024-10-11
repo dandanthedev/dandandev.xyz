@@ -57,7 +57,7 @@
 			name: 'Fit in a Box',
 			description:
 				'Developed an app for Fit in a Box, a company that makes custom boxes to keep you fit.',
-			url: 'https://kickboksengroningen.nl/fit-in-a-box',
+			url: 'https://fitinabox.app',
 			icon: faHeart
 		},
 		{

@@ -415,8 +415,11 @@ My birthday is on the 22nd of November.
 			}
 		}
 
-		for (const index in desktopIconElements)
-			desktopIcons[index].clicked = selectedDesktopIconElements.has(desktopIconElements[index]);
+		for (const desktopIcon of desktopIcons) {
+			desktopIcon.clicked = selectedDesktopIconElements.has(
+				desktopIconElements[desktopIcons.indexOf(desktopIcon)]
+			);
+		}
 	}
 
 	let desktopIconElements = [];

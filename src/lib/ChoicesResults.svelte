@@ -1,37 +1,13 @@
 <script>
 	import { fade, fly } from 'svelte/transition';
 	import { goto } from '$app/navigation';
+	import { env } from '$env/dynamic/public';
 	let data = [];
 	let out = true;
 	let running = false;
 	let totalGames = 0;
 
-	const choicesAPI = 'https://thingbattle.dandandev.xyz'; // TODO: env
-
-	function loadImages() {
-		data.map((item) => {
-			if (item.loaded) {
-				return;
-			}
-			const el = document.querySelector(
-				`[style*="${item.thing.replaceAll(' ', '_').toLowerCase()}.png"]`
-			);
-
-			if (el) {
-				const rect = el.getBoundingClientRect();
-				if (rect.top < window.innerHeight && rect.bottom > 0) {
-					//preload
-					const img = new Image();
-					img.src = `${choicesAPI}/${item.thing.replaceAll(' ', '_').toLowerCase()}.png`;
-
-					img.onload = () => {
-						item.loaded = true;
-						data = [...data];
-					};
-				}
-			}
-		});
-	}
+	const choicesAPI = env.PUBLIC_CHOICES_API;
 
 	async function load() {
 		if (running) {
@@ -45,29 +21,10 @@
 			data.reduce((acc, item) => {
 				return acc + item.games;
 			}, 0) / 2;
-
-		out = false;
-
-		if (typeof window === 'undefined') {
-			return;
-		}
-
-		//on scroll, load all in view results
-		window.addEventListener('scroll', () => {
-			loadImages();
-		});
-
-		setTimeout(() => {
-			loadImages();
-		}, 1000);
 	}
 
 	load();
 </script>
-
-{#if out}
-	<div class="transition" in:fade={{ duration: 500 }} out:fade={{ duration: 500 }} />
-{/if}
 
 <div class="results">
 	{#each data as item}
@@ -80,6 +37,7 @@
 			<div class="thing-overlay">
 				<h2>{item.thing}</h2>
 				<p>{item.percentage}%</p>
+				<p>{item.votes}/{item.games}</p>
 				{#if item.hover}
 					<h3 class="hover" in:fly={{ duration: 200, y: 40 }} out:fly={{ duration: 200, y: 40 }}>
 						{item.votes} vote(s), {item.games} game(s)
@@ -88,18 +46,12 @@
 			</div>
 		</div>
 	{/each}
-</div>
-
-<div class="totalGames">
-	<p>Total games: {totalGames}</p>
+	<div class="totalGames">
+		<p>Total games: {totalGames}</p>
+	</div>
 </div>
 
 <style>
-	h1 {
-		text-align: center;
-		color: white;
-		font-size: 3em;
-	}
 	.result {
 		width: 200px;
 		height: 200px;
@@ -145,32 +97,6 @@
 		overflow-y: scroll;
 	}
 
-	.back {
-		position: absolute;
-		top: 0;
-		left: 0;
-		padding: 10px;
-	}
-
-	.back button {
-		font-size: 2em;
-		padding: 10px;
-		color: white;
-		border: none;
-		cursor: pointer;
-		transition: 0.3s;
-	}
-
-	.transition {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: black;
-		z-index: 100;
-	}
-
 	.hover {
 		font-size: 1.2em;
 		color: white;
@@ -179,11 +105,14 @@
 
 	.totalGames {
 		text-align: center;
-		color: white;
+		color: black;
 		font-size: 2em;
+		width: 100%;
+		margin-bottom: 25px;
 	}
 
 	.totalGames p {
 		margin: 0;
+		font-family: 'Press Start 2P', cursive;
 	}
 </style>

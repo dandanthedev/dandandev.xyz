@@ -361,7 +361,7 @@ My birthday is on the 22nd of November.
 		setTimeout(() => {
 			if (!internal_foundCurrentFocus) {
 				//if no window has comeToTop, then set currentFocus to null
-				if (openWindows.every((w) => !w.comeToTop)) lcurrentFocus = null;
+				if (openWindows.every((w) => !w.comeToTop)) currentFocus = null;
 			}
 		}, 1);
 

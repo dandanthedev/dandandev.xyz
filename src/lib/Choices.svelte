@@ -3,14 +3,17 @@
 	import { onMount } from 'svelte';
 	import { fade, fly, draw } from 'svelte/transition';
 	import { goto } from '$app/navigation';
+	import { Recaptcha, recaptcha, observer } from 'svelte-recaptcha-v2';
 	let thing1 = '';
 	let thing2 = '';
 	let thing1Percentages;
 	let thing2Percentages;
 	let voting = false;
+	let jwt;
 	let out = true;
 
-	const choicesAPI = 'https://thingbattle.dandandev.xyz'; // TODO: env
+	const choicesAPI = env.PUBLIC_CHOICES_API;
+	const recapSiteKey = env.PUBLIC_CAPTCHA_KEY;
 
 	async function random() {
 		let preload1 = new Image();
@@ -23,8 +26,8 @@
 		const data = await response.json();
 
 		//preload images
-		preload1.src = `${choicesAPI}/${data.item1.replaceAll(' ', '_').toLowerCase()}.png`;
-		preload2.src = `${choicesAPI}/${data.item2.replaceAll(' ', '_').toLowerCase()}.png`;
+		preload1.src = `${choicesAPI}/${data[0].replaceAll(' ', '_').toLowerCase()}.png`;
+		preload2.src = `${choicesAPI}/${data[1].replaceAll(' ', '_').toLowerCase()}.png`;
 
 		//wait for images to load
 		await new Promise((resolve) => {
@@ -43,33 +46,41 @@
 			};
 		});
 
-		thing1 = data.item1;
-		thing2 = data.item2;
+		thing1 = data[0];
+		thing2 = data[1];
+		jwt = data[2];
 	}
 
 	async function vote(item) {
-		voting = true;
-		const params = new URLSearchParams();
-		params.append('choice', item);
-		params.append('other', item === thing1 ? thing2 : thing1);
-		const response = await fetch(`${choicesAPI}/choice?${params.toString()}`, {
+		voting = item;
+		recaptcha.execute();
+	}
+
+	async function captchaResolved(event) {
+		const token = event.detail.token;
+		const response = await fetch(`${choicesAPI}/choice`, {
 			method: 'POST',
+			body: JSON.stringify({
+				jwt,
+				captcha: token,
+				choices: [voting, voting === thing1 ? thing2 : thing1]
+			}),
 			headers: {
 				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ item })
+			}
 		});
 		const data = await response.json();
-
-		if (item === thing1) {
-			thing1Percentages = data.chosenPercentage === null ? 0 : data.chosenPercentage;
-			thing2Percentages = data.otherPercentage === null ? 0 : data.otherPercentage;
-		} else {
-			thing2Percentages = data.chosenPercentage === null ? 0 : data.chosenPercentage;
-			thing1Percentages = data.otherPercentage === null ? 0 : data.otherPercentage;
+		if (data?.error) {
+			return alert(data?.error);
 		}
 
-		console.log(thing1Percentages, thing2Percentages);
+		if (voting === thing1) {
+			thing1Percentages = data[0] === null ? 0 : data[0];
+			thing2Percentages = data[1] === null ? 0 : data[1];
+		} else {
+			thing2Percentages = data[0] === null ? 0 : data[0];
+			thing1Percentages = data[1] === null ? 0 : data[1];
+		}
 	}
 
 	async function load() {
@@ -96,6 +107,15 @@
 		}, 500);
 	}}><button>Results</button></a
 > -->
+<Recaptcha
+	sitekey={recapSiteKey}
+	size={'invisible'}
+	on:success={captchaResolved}
+	on:error={() => {
+		alert('Captcha error');
+		voting = false;
+	}}
+/>
 
 <div class="divider">
 	<button

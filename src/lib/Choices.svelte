@@ -10,45 +10,20 @@
 	let thing2Percentages;
 	let voting = false;
 	let jwt;
-	let out = true;
 
 	const choicesAPI = env.PUBLIC_CHOICES_API;
 	const recapSiteKey = env.PUBLIC_CAPTCHA_KEY;
 
 	async function random() {
-		let preload1 = new Image();
-		let preload2 = new Image();
-
-		voting = false;
 		thing1Percentages = null;
 		thing2Percentages = null;
 		const response = await fetch(`${choicesAPI}/random`);
 		const data = await response.json();
 
-		//preload images
-		preload1.src = `${choicesAPI}/${data[0].replaceAll(' ', '_').toLowerCase()}.png`;
-		preload2.src = `${choicesAPI}/${data[1].replaceAll(' ', '_').toLowerCase()}.png`;
-
-		//wait for images to load
-		await new Promise((resolve) => {
-			let loaded = 0;
-			preload1.onload = () => {
-				loaded++;
-				if (loaded === 2) {
-					resolve();
-				}
-			};
-			preload2.onload = () => {
-				loaded++;
-				if (loaded === 2) {
-					resolve();
-				}
-			};
-		});
-
 		thing1 = data[0];
 		thing2 = data[1];
-		jwt = data[2];
+		jwt = response.headers.get('Token');
+		voting = false;
 	}
 
 	async function vote(item) {
@@ -58,15 +33,11 @@
 
 	async function captchaResolved(event) {
 		const token = event.detail.token;
-		const response = await fetch(`${choicesAPI}/choice`, {
+		const response = await fetch(`${choicesAPI}/${voting}`, {
 			method: 'POST',
-			body: JSON.stringify({
-				jwt,
-				captcha: token,
-				choices: [voting, voting === thing1 ? thing2 : thing1]
-			}),
 			headers: {
-				'Content-Type': 'application/json'
+				Authorization: `Bearer ${jwt}`,
+				'captcha-response': token
 			}
 		});
 		const data = await response.json();
@@ -88,34 +59,22 @@
 			return;
 		}
 		await random();
-		out = false;
 	}
 
 	load();
 </script>
 
-{#if out}
-	<div class="transition" in:fade={{ duration: 500 }} out:fade={{ duration: 500 }}></div>
-{/if}
-<!-- <a
-	href="/thingbattle/results"
-	class="results"
-	on:click|preventDefault={() => {
-		out = true;
-		setTimeout(() => {
-			goto('/thingbattle/results');
-		}, 500);
-	}}><button>Results</button></a
-> -->
-<Recaptcha
-	sitekey={recapSiteKey}
-	size={'invisible'}
-	on:success={captchaResolved}
-	on:error={() => {
-		alert('Captcha error');
-		voting = false;
-	}}
-/>
+<div class="captcha">
+	<Recaptcha
+		sitekey={recapSiteKey}
+		size={'invisible'}
+		on:success={captchaResolved}
+		on:error={() => {
+			alert('Captcha error');
+			voting = false;
+		}}
+	/>
+</div>
 
 <div class="divider">
 	<button
@@ -170,6 +129,12 @@
 </div>
 
 <style>
+	.captcha {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		z-index: 1;
+	}
 	.divider {
 		display: flex;
 		justify-content: space-between;
@@ -185,7 +150,14 @@
 		position: relative;
 
 		transition: 1s;
+		cursor: pointer;
 	}
+
+	.thing:disabled {
+		opacity: 0.8;
+		cursor: not-allowed;
+	}
+
 	.thing-overlay {
 		width: 100%;
 		height: 100%;
@@ -217,24 +189,6 @@
 		margin: 0;
 	}
 
-	.choose {
-		text-align: center;
-		font-size: 4em;
-		position: absolute;
-		top: 30px;
-		left: 0;
-		z-index: 1;
-		font-weight: bold;
-		font-family: 'Arial';
-		color: white;
-		text-align: center;
-		width: 100%;
-	}
-
-	.choose p {
-		font-size: 0.5em;
-	}
-
 	.or {
 		position: absolute;
 		left: 50%;
@@ -263,59 +217,6 @@
 		font-weight: bold;
 		cursor: pointer;
 		border-radius: 5px;
-	}
-
-	/* @media (max-width: 768px) {
-		.divider {
-			flex-direction: column;
-		}
-		.thing {
-			width: 100%;
-			height: 50vh;
-		}
-		.choose {
-			top: 5%;
-			transform: translate(-50%, 0);
-			font-size: 3em;
-			width: 100%;
-			text-align: center;
-		}
-
-		.choose p {
-			display: none;
-		}
-
-		.or {
-			top: 50%;
-			transform: translate(-50%, -50%);
-		}
-
-		.thing-overlay h1 {
-			font-size: 2em;
-		}
-		.thing-overlay h2 {
-			font-size: 1.5em;
-		}
-
-		
-		.back {
-			margin-top: 100px;
-		}
-		.results {
-			margin-top: 100px;
-		}
-	} */
-
-	.results {
-		position: absolute;
-		color: white;
-		top: 0;
-		right: 0;
-		padding: 1em;
-		z-index: 1;
-		font-size: 1.5em;
-		font-weight: bold;
-		font-family: 'Arial';
 	}
 
 	.transition {

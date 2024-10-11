@@ -191,6 +191,7 @@
 		height: 20px;
 		background-color: rgb(230, 230, 230);
 		padding: 10px;
+		z-index: 1000;
 	}
 
 	.headerSpacer {
@@ -210,6 +211,7 @@
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		z-index: 1001;
 	}
 
 	.icon {

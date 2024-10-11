@@ -3,6 +3,7 @@ import Explorer from '$lib/Explorer.svelte';
 import SendMessage from '$lib/SendMessage.svelte';
 import Choices from '$lib/Choices.svelte';
 import ChoicesResults from '$lib/ChoicesResults.svelte';
+import Credits from '$lib/Credits.svelte';
 
 export function getScreenSize() {
     //find with and height of element with class backgroundImage 
@@ -19,5 +20,6 @@ export const availableComponents = {
     Explorer: Explorer,
     SendMessage: SendMessage,
     Choices: Choices,
-    ChoicesResults: ChoicesResults
+    ChoicesResults: ChoicesResults,
+    Credits: Credits
 };

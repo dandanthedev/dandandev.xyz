@@ -284,6 +284,13 @@ My birthday is on the 22nd of November.
 			height: 400
 		},
 		{
+			icon: $preloadedAssets.pc,
+			text: 'About this PC',
+			component: 'Credits',
+			width: 600,
+			height: 200
+		},
+		{
 			icon: $preloadedAssets.debugger,
 			text: 'Debug',
 			run: () => {

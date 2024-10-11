@@ -27,8 +27,6 @@
 		"svelte-fa": "^4.0.2",
 		"svelte-french-toast": "^1.2.0",
 		"svelte-recaptcha-v2": "^0.0.2",
-		"uuid": "^10.0.0",
-		"xterm": "^5.3.0",
-		"xterm-addon-fit": "^0.8.0"
+		"uuid": "^10.0.0"
 	}
 }

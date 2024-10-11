@@ -16,6 +16,7 @@
 		debugger: '/icons/debugger.png',
 		chrome: '/icons/chrome.png',
 		linkedin: '/icons/linkedin.png',
+		pc: '/icons/pc.png',
 
 		txt: '/icons/txt.png',
 		excel: '/icons/excel.png',
@@ -33,6 +34,7 @@
 
 		//start asset fetching
 		for (const [key, value] of Object.entries(assets)) {
+			if (!value) continue;
 			loadingText = `Loading ${key}...`;
 			const asset = await fetch(value).catch((e) => {
 				loadingText = 'Failed to load ' + key;

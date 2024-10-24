@@ -22,7 +22,7 @@
 
 		thing1 = data[0];
 		thing2 = data[1];
-		jwt = response.headers.get('Token');
+		jwt = data[2];
 		voting = false;
 	}
 
@@ -36,7 +36,7 @@
 		const response = await fetch(`${choicesAPI}/${voting}`, {
 			method: 'POST',
 			headers: {
-				Authorization: `Bearer ${jwt}`,
+				Token: jwt,
 				'captcha-response': token
 			}
 		});

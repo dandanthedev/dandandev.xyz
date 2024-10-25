@@ -1,9 +1,9 @@
 <script>
 	import { env } from '$env/dynamic/public';
-	import { onMount } from 'svelte';
-	import { fade, fly, draw } from 'svelte/transition';
-	import { goto } from '$app/navigation';
-	import { Recaptcha, recaptcha, observer } from 'svelte-recaptcha-v2';
+	import { fly } from 'svelte/transition';
+	import { Recaptcha, recaptcha } from 'svelte-recaptcha-v2';
+	import { jwtDecode } from 'jwt-decode';
+
 	let thing1 = '';
 	let thing2 = '';
 	let thing1Percentages;
@@ -18,11 +18,15 @@
 		thing1Percentages = null;
 		thing2Percentages = null;
 		const response = await fetch(`${choicesAPI}/random`);
-		const data = await response.json();
+		if (response.status !== 200) {
+			return alert('Error fetching data');
+		}
+		const text = await response.text();
+		const data = jwtDecode(text);
 
-		thing1 = data[0];
-		thing2 = data[1];
-		jwt = data[2];
+		thing1 = data.options[0];
+		thing2 = data.options[1];
+		jwt = text;
 		voting = false;
 	}
 

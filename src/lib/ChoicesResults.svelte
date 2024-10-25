@@ -46,9 +46,11 @@
 			</div>
 		</div>
 	{/each}
-	<div class="totalGames">
-		<p>Total games: {totalGames}</p>
-	</div>
+	{#if totalGames}
+		<div class="totalGames">
+			<p>Total games: {totalGames}</p>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -69,8 +71,7 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		width: 100%;
-		height: 100%;
+		height: 180px;
 		padding: 10px;
 		border-radius: 10px;
 	}

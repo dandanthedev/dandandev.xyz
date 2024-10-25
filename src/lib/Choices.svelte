@@ -81,55 +81,63 @@
 </div>
 
 <div class="divider">
-	<button
-		class="thing"
-		style="background-image: url('{choicesAPI}/{thing1.replaceAll(' ', '_').toLowerCase()}.png')"
-		on:click={() => vote(thing1)}
-		disabled={voting}
-	>
-		<div class="thing-overlay">
-			<h1>{thing1}</h1>
-			{#if thing1Percentages !== null}
-				<h2 in:fly={{ duration: 200, y: 50 }} out:fly={{ duration: 200, y: 50 }}>
-					{thing1Percentages}%
-				</h2>
-			{/if}
-		</div>
-	</button>
-
-	<div class="or">
-		{#if !thing1Percentages && !thing2Percentages}
-			<h1 in:fly={{ x: -100, duration: 200, delay: 201 }} out:fly={{ x: -100, duration: 200 }}>
-				{#if thing1 && thing2}
-					or
-				{:else}
-					Loading...
+	{#if thing1}
+		<button
+			class="thing"
+			style="background-image: url('{choicesAPI}/{thing1.replaceAll(' ', '_').toLowerCase()}.png')"
+			on:click={() => vote(thing1)}
+			disabled={voting}
+		>
+			<div class="thing-overlay">
+				<h1>{thing1}</h1>
+				{#if thing1Percentages !== null}
+					<h2 in:fly={{ duration: 200, y: 50 }} out:fly={{ duration: 200, y: 50 }}>
+						{thing1Percentages}%
+					</h2>
 				{/if}
-			</h1>
-		{:else}
-			<button
-				on:click={random}
-				class="next"
-				in:fly={{ x: 100, duration: 200, delay: 201 }}
-				out:fly={{ x: 100, duration: 200 }}>Next</button
-			>
-		{/if}
-	</div>
-	<button
-		class="thing"
-		style="background-image: url('{choicesAPI}/{thing2.replaceAll(' ', '_').toLowerCase()}.png')"
-		on:click={() => vote(thing2)}
-		disabled={voting}
-	>
-		<div class="thing-overlay">
-			<h1>{thing2}</h1>
-			{#if thing2Percentages !== null}
-				<h2 in:fly={{ duration: 200, y: 50 }} out:fly={{ duration: 200, y: 50 }}>
-					{thing2Percentages}%
-				</h2>
+			</div>
+		</button>
+	{/if}
+
+	{#if !thing1Percentages && !thing2Percentages}
+		<h1
+			class="or"
+			class:black={!thing1 && !thing2}
+			in:fly={{ x: -100, duration: 200, delay: 201 }}
+			out:fly={{ x: -100, duration: 200 }}
+		>
+			{#if thing1 && thing2}
+				or
+			{:else}
+				Loading...
 			{/if}
-		</div>
-	</button>
+		</h1>
+	{:else}
+		<button
+			on:click={random}
+			class="next or"
+			in:fly={{ x: 100, duration: 200, delay: 201 }}
+			out:fly={{ x: 100, duration: 200 }}>Next</button
+		>
+	{/if}
+
+	{#if thing2}
+		<button
+			class="thing"
+			style="background-image: url('{choicesAPI}/{thing2.replaceAll(' ', '_').toLowerCase()}.png')"
+			on:click={() => vote(thing2)}
+			disabled={voting}
+		>
+			<div class="thing-overlay">
+				<h1>{thing2}</h1>
+				{#if thing2Percentages !== null}
+					<h2 in:fly={{ duration: 200, y: 50 }} out:fly={{ duration: 200, y: 50 }}>
+						{thing2Percentages}%
+					</h2>
+				{/if}
+			</div>
+		</button>
+	{/if}
 </div>
 
 <style>
@@ -198,14 +206,11 @@
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
-		font-size: 2em;
 		color: white;
 		z-index: 1;
 		font-weight: bold;
 		font-family: 'Arial';
-
-		display: flex;
-		justify-content: space-between;
+		font-size: 3em;
 	}
 
 	.thing h2 {
@@ -223,13 +228,7 @@
 		border-radius: 5px;
 	}
 
-	.transition {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: black;
-		z-index: 100;
+	.black {
+		color: black;
 	}
 </style>

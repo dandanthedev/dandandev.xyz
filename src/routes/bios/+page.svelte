@@ -95,6 +95,9 @@
 </p>
 
 <style>
+	* {
+		cursor: none;
+	}
 	.bg {
 		background-color: #060098;
 		position: fixed;

@@ -129,6 +129,10 @@
 		src: url('/ibm.woff') format('woff');
 	}
 
+	* {
+		cursor: none;
+	}
+
 	.blackOverlay {
 		position: fixed;
 		top: 0;

@@ -236,13 +236,13 @@ My birthday is on the 22nd of November.
 				buttons: [
 					{
 						text: 'Send me an email',
-						onClick: () => {
-							location = 'mailto:daan@daanschenkel.nl';
+						action: () => {
+							location = 'mailto:hey@dandandev.xyz';
 						}
 					},
 					{
 						text: 'Contact me on Discord',
-						onClick: () => {
+						action: () => {
 							location = 'https://discord.com/users/654390669472694284';
 						}
 					}

@@ -4,9 +4,9 @@
 	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import { fade } from 'svelte/transition';
-	import { goto } from '$app/navigation';
+	import { goto, preloadData } from '$app/navigation';
 	import { initSocket } from '$lib/sockets/sounds.js';
-	let overlay = true;
+	let overlay = false;
 	let loadingText = '';
 	let assets = {
 		background: '/background.jpg',
@@ -31,6 +31,9 @@
 	async function load() {
 		overlay = false;
 		await new Promise((r) => setTimeout(r, 1000)); //wait for fadein
+
+		loadingText = 'Loading scripts...';
+		await preloadData('/home');
 
 		//start asset fetching
 		for (const [key, value] of Object.entries(assets)) {

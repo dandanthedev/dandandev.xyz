@@ -115,7 +115,7 @@
 	{:else}
 		<button
 			on:click={random}
-			class="next or"
+			class="next"
 			in:fly={{ x: 100, duration: 200, delay: 201 }}
 			out:fly={{ x: 100, duration: 200 }}>Next</button
 		>
@@ -218,7 +218,12 @@
 	}
 
 	.next {
-		font-size: 0.5em;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 1000;
+		font-size: 1em;
 		padding: 0.5em 1em;
 		border: none;
 		background: white;

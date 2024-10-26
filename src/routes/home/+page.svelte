@@ -12,6 +12,7 @@
 	import { getList, play } from '$lib/sockets/sounds.js';
 	import { getScreenSize, availableComponents } from '$lib/utils.js';
 	import { setToastWrapper } from '$lib/sockets/sounds.js';
+	import { biosSettings } from '$lib/stores.js';
 	let zindex = 1;
 	let volume = 0.5;
 
@@ -128,7 +129,7 @@
 		else overlay = false;
 
 		const audio = new Audio($preloadedAssets.bootup);
-		if (!overlay) audio.play();
+		if (!overlay && $biosSettings.sound.value) audio.play();
 
 		setInterval(() => {
 			time = new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
@@ -164,6 +165,7 @@
 
 		async function playRandomTrack() {
 			if (overlay) return;
+			if (!$biosSettings.music.value) return;
 
 			await new Promise((r) => setTimeout(r, 3000));
 			const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
@@ -195,7 +197,7 @@
 		}
 	});
 
-	const desktopIcons = [
+	let desktopIcons = [
 		{
 			icon: $preloadedAssets.explorer,
 			text: 'Explorer',
@@ -290,7 +292,8 @@ My birthday is on the 22nd of November.
 			width: 600,
 			height: 200
 		},
-		{
+
+		$biosSettings.debug.value && {
 			icon: $preloadedAssets.debugger,
 			text: 'Debug',
 			run: () => {
@@ -306,6 +309,7 @@ My birthday is on the 22nd of November.
 			}
 		}
 	];
+	desktopIcons = desktopIcons.filter((i) => i);
 	desktopIcons.forEach((i) => (i.id = uuidv4()));
 
 	let openWindows = [];
@@ -612,7 +616,7 @@ My birthday is on the 22nd of November.
 					on:click={async () => {
 						overlay = true;
 						const audio = new Audio($preloadedAssets.shutdown);
-						audio.play();
+						if ($biosSettings.sound.value) audio.play();
 						await new Promise((r) => setTimeout(r, 1000));
 						goto('/');
 					}}
@@ -652,23 +656,25 @@ My birthday is on the 22nd of November.
 				}}
 				class="volumeSlider"
 			/>
-			<div class="soundList">
-				{#await getList()}
-					<p class="loading">Loading...</p>
-				{:then list}
-					{#each list as sound}
-						<button
-							class="sound"
-							on:click={() => {
-								play(sound);
-							}}
-						>
-							<p>{sound}</p>
-						</button>
-					{/each}
-				{/await}
-			</div>
-			<p class="note">btw: these play for everyone currently on the site, including me :)</p>
+			{#if $biosSettings.soundserver.value}
+				<div class="soundList">
+					{#await getList()}
+						<p class="loading">Loading...</p>
+					{:then list}
+						{#each list as sound}
+							<button
+								class="sound"
+								on:click={() => {
+									play(sound);
+								}}
+							>
+								<p>{sound}</p>
+							</button>
+						{/each}
+					{/await}
+				</div>
+				<p class="note">btw: these play for everyone currently on the site, including me :)</p>
+			{/if}
 		</div>
 	{/if}
 </div>

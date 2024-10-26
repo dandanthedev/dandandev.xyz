@@ -1,4 +1,11 @@
 import io from 'socket.io-client';
+import { biosSettings } from '../stores';
+
+let biosSettingsValue = {};
+
+biosSettings.subscribe(value => {
+    biosSettingsValue = value;
+});
 
 const SOUNDS_URL = 'https://sounds.dandandev.xyz';
 
@@ -13,6 +20,7 @@ export function setToastWrapper(toastWrapper) {
 }
 
 export function initSocket() {
+    if (!biosSettingsValue.soundserver.value) return;
     socket = io(SOUNDS_URL);
 
     socket.on('list', function (data) {
@@ -42,6 +50,7 @@ export function initSocket() {
 }
 
 export async function getList() {
+    if (!biosSettingsValue.soundserver.value) return [];
     //wait for list to be populated
     while (list.length == 0) {
         await new Promise(resolve => setTimeout(resolve, 100));

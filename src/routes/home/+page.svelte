@@ -227,6 +227,25 @@ My birthday is on the 22nd of November.
 		},
 		{
 			icon: $preloadedAssets.txt,
+			text: "skills.txt",
+			component: "Text",
+			width: 700,
+			height: 350,
+			passToComponent: {
+				text: `SvelteKit: very experienced. <br/>
+				React (Native) (/Next.js): very experienced but not my favorite <a target="_blank">href="https://www.reddit.com/r/reactjs/comments/126uzfo">library</a> <br/>
+				Node.js/TypeScript (+TRPC, Express, Socket.io, Prisma, Discord.js): very experienced <br/>
+				Python: beginner <br/>
+				Java: i can make hello world? <br/>
+				Cloudflare: managed DNS/Firewall infrastructure for multiple companies.<br/>
+				Bunny.net: Implemented bunny.net stream into advanced dynamic web apps.<br/>
+				Infrastructure: Managed multiple serv(ers/ices), including complex clusters and load balancing.<br/><br/>
+				+ probably some other stuff i forgot. Feel free to ask me about it :D`,
+				allowHTML: true
+				},
+			},
+		{
+			icon: $preloadedAssets.txt,
 			text: 'contact.txt',
 			component: 'Text',
 			width: 400,

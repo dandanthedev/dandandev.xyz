@@ -239,7 +239,9 @@ My birthday is on the 22nd of November.
 				Java: i can make hello world? <br/>
 				Cloudflare: managed DNS/Firewall infrastructure for multiple companies.<br/>
 				Bunny.net: Implemented bunny.net stream into advanced dynamic web apps.<br/>
-				Infrastructure: Managed multiple serv(ers/ices), including complex clusters and load balancing.<br/><br/>
+				Infrastructure: Managed multiple serv(ers/ices), including complex clusters and load balancing.<br/>
+				Web Scraping/Reverse Engineering: I've worked on multiple projects that included very complex web scraping and reverse engineering of their entire authentication system.<br/>
+				<br/>
 				+ probably some other stuff i forgot. Feel free to ask me about it :D`,
 				allowHTML: true
 				},

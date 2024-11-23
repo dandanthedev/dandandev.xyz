@@ -270,13 +270,13 @@ My birthday is on the 22nd of November.
 				]
 			}
 		},
-		{
-			icon: $preloadedAssets.chrome,
-			text: 'message.html',
-			component: 'SendMessage',
-			width: 400,
-			height: 200
-		},
+		// {
+		// 	icon: $preloadedAssets.chrome,
+		// 	text: 'message.html',
+		// 	component: 'SendMessage',
+		// 	width: 400,
+		// 	height: 200
+		// },
 		{
 			icon: faGithub,
 			text: 'Github',

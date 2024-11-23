@@ -233,7 +233,7 @@ My birthday is on the 22nd of November.
 			height: 350,
 			passToComponent: {
 				text: `SvelteKit: very experienced. <br/>
-				React (Native) (/Next.js): very experienced but not my favorite <a target="_blank">href="https://www.reddit.com/r/reactjs/comments/126uzfo">library</a> <br/>
+				React (Native) (/Next.js): very experienced but not my favorite <a target="_blank" href="https://www.reddit.com/r/reactjs/comments/126uzfo">library</a> <br/>
 				Node.js/TypeScript (+TRPC, Express, Socket.io, Prisma, Discord.js): very experienced <br/>
 				Python: beginner <br/>
 				Java: i can make hello world? <br/>

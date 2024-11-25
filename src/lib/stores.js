@@ -25,7 +25,7 @@ export const biosSettings = writable({
     music: {
         type: "boolean",
         displayName: "Enable music",
-        value: true
+        value: false
     },
     sound: {
         type: "boolean",

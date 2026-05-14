@@ -32,11 +32,6 @@ export const biosSettings = writable({
         displayName: "Enable sound effects",
         value: true
     },
-    soundserver: {
-        type: "boolean",
-        displayName: "Enable sound server",
-        value: true
-    }
 });
 
 biosSettings.subscribe(value => {

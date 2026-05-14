@@ -43,8 +43,9 @@
 		},
 		{
 			name: 'is-a.dev',
-			description: 'Developed an open-source register site, linked with analytics and web hosting. (NO LONGER ACTIVE)',
-			url: 'https://manage.is-a.dev',
+			description:
+				'Developed an open-source register site, linked with analytics and web hosting. (NO LONGER ACTIVE)',
+			url: 'https://github.com/is-a-dev/manage-site',
 			icon: faGlobe
 		},
 		{
@@ -57,7 +58,7 @@
 			name: 'Fit in a Box',
 			description:
 				'Developed an app for Fit in a Box, a company that makes custom boxes to keep you fit.',
-			url: 'https://fitinabox.app',
+			url: null,
 			icon: faHeart
 		},
 		{
@@ -82,9 +83,9 @@
 			icon: faFire
 		},
 		{
-			name: 'CrewHL.nl',
-			description: `Made an internal app integrated with WhatsApp and the user's school schedules, to manage the schools music crew administration.`,
-			url: 'https://crewhl.nl',
+			name: 'PlanHL.nl',
+			description: `Made an internal app integrated with WhatsApp and the user's school schedules, to manage the schools absence management and planning.`,
+			url: null,
 			icon: faMicrophone
 		},
 		{
@@ -110,14 +111,16 @@
 					icon: project.icon,
 					passToComponent: {
 						text: project.description,
-						buttons: [
-							{
-								text: 'Visit website',
-								action: () => {
-									window.open(project.url);
-								}
-							}
-						],
+						buttons: project.url
+							? [
+									{
+										text: 'Visit website',
+										action: () => {
+											window.open(project.url);
+										}
+									}
+								]
+							: [],
 						allowHTML: true
 					}
 				});

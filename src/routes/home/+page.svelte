@@ -9,9 +9,7 @@
 	import { preloadedAssets } from '$lib/stores.js';
 	import { goto } from '$app/navigation';
 	import { faArrowLeft, faCheckCircle, faPowerOff } from '@fortawesome/free-solid-svg-icons';
-	import { getList, play } from '$lib/sockets/sounds.js';
 	import { getScreenSize, availableComponents } from '$lib/utils.js';
-	import { setToastWrapper } from '$lib/sockets/sounds.js';
 	import { biosSettings } from '$lib/stores.js';
 	let zindex = 1;
 	let volume = 0.5;
@@ -39,8 +37,6 @@
 			...options
 		});
 	}
-
-	setToastWrapper(toastWrapper);
 
 	export function openWindow(windowData) {
 		const { screenW, screenH } = getScreenSize();
@@ -200,7 +196,7 @@
 	let desktopIcons = [
 		{
 			icon: $preloadedAssets.explorer,
-			text: 'Explorer',
+			text: 'Projects',
 			component: 'Explorer',
 			width: 500,
 			height: 600
@@ -210,55 +206,64 @@
 			text: 'about.txt',
 			component: 'Text',
 			width: 700,
-			height: 400,
+			height: 450,
 			passToComponent: {
-				text: `Heya! My name is Daan, better known online as dandandev/DannyDanDan. I live in The Netherlands. I also grew up and go to school there. I quickly discovered my obsession to everything tech related when i was about 5-6. I've been tinkering with everything that makes those beep boop sounds ever since.<br/><br/>
-
-My journey started with Scratch, where i made a lot of games and animations. After that i started learning Processing and some Arduino. After this i discovered Node.js, which i've been using for a while now. I've also tried some Java, Python & Skript.<br/><br/>
-
-Nowadays i mainly spend my time building webapps with SvelteKit. I ❤️ Svelte(kit) and use it to build all my websites, even the one you're looking at right now!<br/><br/>
-
-Before Svelte, i used React, which i now use to build mobile apps.<br/><br/>
-
-My birthday is on the 22nd of November.
+				text: `Hey! I'm Daan, better known online as Danny or dandandev. I'm a developer from The Netherlands, where I've lived my whole life.
+<br/><br/>
+My obsession with tech started early. When I was around 5 or 6, I was already “hacking” into my primary school’s computers and inspecting everything with Control + Shift + I. That curiosity never really went away.
+<br/><br/>
+I started out building games and animations in Scratch, then moved on to Processing and Arduino projects. Eventually I discovered Node.js, which opened the door to web development and backend programming. Along the way I also experimented with Java, Python, and Skript.
+<br/><br/>
+These days I mainly focus on building polished, user-oriented web experiences (insert more buzzwords here) using SvelteKit and Next.js. I enjoy creating fast, interactive applications with strong UX, clean architecture, and just the right amount of overengineering (as im sure you've noticed by now).<br/><br/>
+Anyway, enjoy the rest of my little corner of the internet!
                 `,
 				allowHTML: true
 			}
 		},
 		{
 			icon: $preloadedAssets.txt,
-			text: "skills.txt",
-			component: "Text",
+			text: 'skills.txt',
+			component: 'Text',
 			width: 700,
-			height: 350,
+			height: 470,
 			passToComponent: {
-				text: `SvelteKit: very experienced. <br/>
-				React (Native) (/Next.js): very experienced but not my favorite <a target="_blank" href="https://www.reddit.com/r/reactjs/comments/126uzfo">library</a> <br/>
-				Node.js/TypeScript (+TRPC, Express, Socket.io, Prisma, Discord.js): very experienced <br/>
-				Python: beginner <br/>
-				Java: i can make hello world? <br/>
-				Cloudflare: managed DNS/Firewall infrastructure for multiple companies.<br/>
-				Bunny.net: Implemented bunny.net stream into advanced dynamic web apps.<br/>
-				Infrastructure: Managed multiple serv(ers/ices), including complex clusters and load balancing.<br/>
-				Web Scraping/Reverse Engineering: I've worked on multiple projects that included very complex web scraping and reverse engineering of their entire authentication system.<br/>
-				<br/>
-				+ probably some other stuff i forgot. Feel free to ask me about it :D`,
+				text: `
+				<ul>
+	<li>SvelteKit</li>
+	<li>Next.js / React Native</li>
+	<li>Node.js / TypeScript (+ tRPC, Express, Socket.IO, Prisma, Discord.js, and more)</li>
+	<li>Cloudflare: Built and deployed high-traffic edge-powered applications and managed DNS/firewall infrastructure for multiple companies.</li>
+	<li>Bunny.net: Implemented large parts of the Bunny.net suite into advanced dynamic web applications.</li>
+	<li>Infrastructure: Managed multiple servers/services, including complex clusters, load balancing, caching layers, queues, and production-ready infrastructure.</li>
+	<li>Self-hosting: Running multiple self-hosted services on my Dell PowerEdge R710 (aka power hog) using TrueNAS and Coolify.</li>
+	<li>Backend Architecture: Designed custom authentication systems, database structures, networking setups, and scalable backend systems.</li>
+	<li>Performance & Scaling: Built load-ready applications using queues, aggressive caching, and techniques that make dynamic applications behave like static sites.</li>
+	<li>Web Scraping / Reverse Engineering: Worked on projects involving advanced scraping, reverse engineering, and authentication flow analysis.</li>
+</ul>
+
+Anything not mentioned here? Feel free to ask me about it :D`,
 				allowHTML: true
-				},
-			},
+			}
+		},
 		{
 			icon: $preloadedAssets.txt,
 			text: 'contact.txt',
 			component: 'Text',
-			width: 400,
+			width: 500,
 			height: 200,
 			passToComponent: {
-				text: `Yes, i see you, tHeSe bUtTonS doNt ExIsT iN NorMaL WiNDows!!! (dont care didnt ask)`,
+				text: `Want to have a chat? Feel free to hit me up using any (or all) of the following methods:`,
 				buttons: [
 					{
 						text: 'Send me an email',
 						action: () => {
-							location = 'mailto:hey@dandandev.xyz';
+							location = 'mailto:site@dandandev.xyz';
+						}
+					},
+					{
+						text: 'Contact me on WhatsApp',
+						action: () => {
+							location = 'https://wa.me/31502113616';
 						}
 					},
 					{
@@ -270,18 +275,14 @@ My birthday is on the 22nd of November.
 				]
 			}
 		},
-		// {
-		// 	icon: $preloadedAssets.chrome,
-		// 	text: 'message.html',
-		// 	component: 'SendMessage',
-		// 	width: 400,
-		// 	height: 200
-		// },
 		{
 			icon: faGithub,
 			text: 'Github',
 			run: () => {
-				window.open('https://github.com/dandanthedev/daanschenkel.nl-desktop');
+				alert(
+					'I have a lot of projects private so my GitHub might not be the best place to look at my full portfolio. Feel free to contact me and ill show you some private projects.'
+				);
+				window.open('https://github.com/dandanthedev');
 			}
 		},
 		{
@@ -677,25 +678,6 @@ My birthday is on the 22nd of November.
 				}}
 				class="volumeSlider"
 			/>
-			{#if $biosSettings.soundserver.value}
-				<div class="soundList">
-					{#await getList()}
-						<p class="loading">Loading...</p>
-					{:then list}
-						{#each list as sound}
-							<button
-								class="sound"
-								on:click={() => {
-									play(sound);
-								}}
-							>
-								<p>{sound}</p>
-							</button>
-						{/each}
-					{/await}
-				</div>
-				<p class="note">btw: these play for everyone currently on the site, including me :)</p>
-			{/if}
 		</div>
 	{/if}
 </div>

@@ -6,6 +6,7 @@
 
 	let overlay = true;
 	let video;
+	let triedUpgrade = false;
 	onMount(async () => {
 		if ($preloadedAssets.loading) goto('/');
 
@@ -38,8 +39,10 @@
 	<div class="buttons">
 		<button
 			class="accept"
+			class:disabled={triedUpgrade}
 			on:click={() => {
 				alert('wait, you actually want win11? we havent coded that functionality yet');
+				triedUpgrade = true;
 			}}>Accept upgrade!</button
 		>
 		<a
@@ -155,5 +158,10 @@
 		height: 100%;
 
 		object-fit: cover;
+	}
+
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 </style>

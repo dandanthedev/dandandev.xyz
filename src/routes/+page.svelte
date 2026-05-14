@@ -5,7 +5,6 @@
 	import Fa from 'svelte-fa';
 	import { fade } from 'svelte/transition';
 	import { goto, preloadData } from '$app/navigation';
-	import { initSocket } from '$lib/sockets/sounds.js';
 	let overlay = true;
 	let wentToBios = false;
 	let loadingText = '';
@@ -67,10 +66,6 @@
 
 		$preloadedAssets = assets;
 
-		//connect to sounds server
-		loadingText = 'Connecting to soundserver...';
-		await initSocket();
-
 		overlay = true;
 		await new Promise((r) => setTimeout(r, 2000)); //wait for fadeout
 
@@ -122,7 +117,7 @@
 <p class="biosKey">Press DEL to enter BIOS</p>
 
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+	@import url(https://fonts.bunny.net/css?family=press-start-2p:400|source-code-pro:400,600);
 
 	@font-face {
 		font-family: 'ibm';

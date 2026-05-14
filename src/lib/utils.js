@@ -1,6 +1,5 @@
 import Text from '$lib/Text.svelte';
 import Explorer from '$lib/Explorer.svelte';
-import SendMessage from '$lib/SendMessage.svelte';
 import Choices from '$lib/Choices.svelte';
 import ChoicesResults from '$lib/ChoicesResults.svelte';
 import Credits from '$lib/Credits.svelte';
@@ -18,7 +17,6 @@ export function getScreenSize() {
 export const availableComponents = {
     Text: Text,
     Explorer: Explorer,
-    SendMessage: SendMessage,
     Choices: Choices,
     ChoicesResults: ChoicesResults,
     Credits: Credits

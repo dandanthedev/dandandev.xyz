@@ -20,12 +20,11 @@
 	<p class="credits" out:fade={{ duration: 1000 }}>
 		<b class="title">Credits</b><br />
 		Made by Danny (me :D)<br />
-		With a little help from <a href="https://github.com/oscarnow">Oscar</a><br />
+		With a little help from <a href="https://github.com/oscarnow" target="_blank">Oscar</a><br />
 		<br />
 		<b>Things used to run this:</b>
 		<br />
 		<a href="https://kit.svelte.dev/">Svelte(kit)</a> - The framework this site is built on<br />
-		<a href="https://socket.io">Socket.io</a> - For real-time communication (sounds)<br />
 		<a href="https://cloudflare.com">Cloudflare</a> - Keeping my site online<br />
 		<a href="https://fontawesome.com">Font Awesome</a> (+svelte-fa) - For the icons<br />
 		<a href="https://railway.app?referralCode=x93oY2">Railway</a> - for hosting the backends<br />

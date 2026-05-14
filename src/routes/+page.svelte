@@ -73,7 +73,8 @@
 
 		// //TROLLS
 		const trolls = ['update', '11'];
-		if (Math.random() < 0.1 && $biosSettings.trolls.value) {
+		const trollChance = 0.1; //10% chance to go to a random troll page
+		if (Math.random() < trollChance && $biosSettings.trolls.value) {
 			return goto(`/trolls/${trolls[Math.floor(Math.random() * trolls.length)]}`);
 		}
 

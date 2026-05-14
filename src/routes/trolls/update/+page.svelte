@@ -14,7 +14,7 @@
 		while (percent < 100) {
 			percent += Math.random() * 10;
 			percent = Math.floor(percent);
-			await new Promise((r) => setTimeout(r, Math.random() * 2000));
+			await new Promise((r) => setTimeout(r, Math.random() * 500));
 
 			if (Math.random() < 0.01) percent = 100;
 		}

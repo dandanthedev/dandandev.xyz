@@ -8,7 +8,7 @@
 	onMount(() => {
 		timeout = setTimeout(() => {
 			show = false;
-		}, 51000);
+		}, 30000);
 
 		return () => {
 			clearTimeout(timeout);
@@ -33,7 +33,6 @@
 		find an alternative for<br />
 		<a href="https://neodrag.dev">NeoDrag</a> - For the draggable windows<br />
 		<a href="https://expressjs.com/">Express</a> - For the backend(s)<br />
-		<a href="https://trpc.io">TRPC</a> - i didnt actually end up using this but omg i need to<br />
 		<br /><br />
 		<b class="legal"
 			>All images, names, etc used on this site are property of their respective authors. I am not
@@ -53,8 +52,8 @@
 		0% {
 			transform: translateY(20%);
 		}
-		98% {
-			transform: translateY(-100%);
+		95% {
+			transform: translateY(-99%);
 			opacity: 1;
 		}
 		100% {
@@ -68,7 +67,7 @@
 		font-size: 1.5em;
 		color: black;
 		text-align: center;
-		animation: creditsRoll 51s linear;
+		animation: creditsRoll 30s linear;
 		z-index: -1;
 	}
 

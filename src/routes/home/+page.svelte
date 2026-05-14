@@ -311,7 +311,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 			icon: $preloadedAssets.pc,
 			text: 'About this PC',
 			component: 'Credits',
-			width: 600,
+			width: 800,
 			height: 200
 		},
 

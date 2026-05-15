@@ -289,7 +289,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 			icon: $preloadedAssets.linkedin,
 			text: 'LinkedIn',
 			run: () => {
-				window.open('https://www.linkedin.com/in/daan-schenkel-b65726226/');
+				window.open('https://www.linkedin.com/in/dandandev/');
 			},
 			color: '#0A66C2'
 		},

@@ -36,7 +36,7 @@
 		}
 		didInitLocals();
 		overlay = false;
-		await new Promise((r) => setTimeout(r, 1000)); //wait for fadein
+		await new Promise((r) => setTimeout(r, 400)); //wait for fadein
 
 		loadingText = 'Loading scripts...';
 		await preloadData('/home');

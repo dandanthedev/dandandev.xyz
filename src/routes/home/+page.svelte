@@ -269,7 +269,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 					{
 						text: 'Contact me on Discord',
 						action: () => {
-							location = 'https://discord.com/channels/@me/654390669472694284/';
+							location = 'https://discord.com/users/654390669472694284/';
 						}
 					}
 				]

@@ -68,7 +68,9 @@
 		};
 
 		openWindows = [...openWindows, newWindow];
-		focusWindow(newWindow.id);
+		setTimeout(() => {
+			focusWindow(newWindow.id);
+		}, 10);
 	}
 
 	function focusWindow(id) {
@@ -565,6 +567,17 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 							title: icon.text
 						});
 					icon.clicked = false;
+				}}
+				on:keydown={(e) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						if (icon.run) icon.run();
+						else
+							openWindow({
+								...icon,
+								title: icon.text
+							});
+						icon.clicked = false;
+					}
 				}}
 				class:clicked={icon.clicked}
 			>

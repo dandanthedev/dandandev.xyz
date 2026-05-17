@@ -1,7 +1,7 @@
 <script>
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { scale } from 'svelte/transition';
 	import { draggable } from '@neodrag/svelte';
-	import { createEventDispatcher } from 'svelte';
-	const dispatch = createEventDispatcher();
 	import Fa from 'svelte-fa';
 	import {
 		faMinus,
@@ -9,9 +9,9 @@
 		faUpRightAndDownLeftFromCenter,
 		faDownLeftAndUpRightToCenter
 	} from '@fortawesome/free-solid-svg-icons';
-	import { scale } from 'svelte/transition';
-	import { onMount } from 'svelte';
 	import { getScreenSize } from '$lib/utils.js';
+
+	const dispatch = createEventDispatcher();
 
 	export let id;
 	export let windows = [];
@@ -44,6 +44,18 @@
 	let wBack = width;
 	let hBack = height;
 
+	function handleHeaderPointerDown(e) {
+		if (!fullscreen) return;
+		if (debug) console.log('exit fullscreen before drag');
+		fullscreen = false;
+		width = wBack;
+		height = hBack;
+		const { screenW } = getScreenSize();
+		const centeredX = e.clientX - width / 2;
+		x = Math.min(Math.max(centeredX, 0), screenW - width);
+		y = 0;
+	}
+
 	$: if (focus) {
 		if (!hidden) {
 			hidden = true;
@@ -66,36 +78,15 @@
 	$: if (debug) console.log(width, height, x, y);
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
+	aria-label={title}
 	on:focus={() => {
 		currentlyFocused = true;
 	}}
 	on:blur={() => {
 		currentlyFocused = false;
 	}}
-	use:draggable={{
-		handle: '.header',
-		position: {
-			x: x,
-			y: y
-		},
-		onDrag: (e) => {
-			if (e.offsetX === 0 && e.offsetY === 0) return; //prevents going out of fullscreen while going in
-			if (fullscreen) {
-				if (debug) console.log('going out of fullscreen');
-				fullscreen = false;
-				width = wBack;
-				height = hBack;
-			}
-		}
-	}}
-	class="window"
-	data-windowId={id}
-	style="width: {width}px; height: {height}px; z-index: {zIndex}; opacity: {hidden
-		? 0
-		: 1}; pointer-events: {hidden ? 'none' : 'auto'};"
-	in:scale={{ duration: 200, start: 0.9, opacity: 0 }}
-	out:scale={{ duration: 200, start: 0.9, opacity: 0 }}
 	on:mousedown={() => {
 		zIndex = getNextZIndex();
 	}}
@@ -105,9 +96,46 @@
 	on:click={() => {
 		zIndex = getNextZIndex();
 	}}
+	on:keydown={(e) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			zIndex = getNextZIndex();
+		}
+	}}
+	use:draggable={{
+		handle: '.header',
+		position: {
+			x: x,
+			y: y
+		},
+		onDragStart: (e) => {
+			if (!fullscreen) return;
+			if (debug) console.log('going out of fullscreen on drag start');
+			fullscreen = false;
+			width = wBack;
+			height = hBack;
+			const { screenW, screenH } = getScreenSize();
+			const rect = e.rootNode.getBoundingClientRect();
+			const cursorX = e.event?.clientX ?? 0;
+			const cursorY = e.event?.clientY ?? 0;
+			const offsetX = cursorX - rect.left;
+			const offsetY = cursorY - rect.top;
+			x = Math.min(Math.max(cursorX - width / 2, 0), screenW - width);
+			y = Math.min(Math.max(cursorY - offsetY, 0), screenH - height);
+		},
+		onDrag: (e) => {
+			if (e.offsetX === 0 && e.offsetY === 0) return; //prevents going out of fullscreen while going in
+		}
+	}}
+	class="window"
+	data-windowId={id}
+	style="width: {width}px; height: {height}px; z-index: {zIndex}; opacity: {hidden
+		? 0
+		: 1}; pointer-events: {hidden ? 'none' : 'auto'};"
+	in:scale={{ duration: 200, start: 0.9, opacity: 0 }}
+	out:scale={{ duration: 200, start: 0.9, opacity: 0 }}
 	class:focused={focussedWindow === id}
 >
-	<div class="header">
+	<div class="header" on:pointerdown|capture={handleHeaderPointerDown}>
 		<h1>{title} {debug ? id : ''}</h1>
 	</div>
 	<div class="icons">

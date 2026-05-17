@@ -140,6 +140,17 @@
 				day: 'numeric'
 			});
 		}, 1000);
+
+		setTimeout(() => {
+			//find desktop icon about and open it
+			const desktopIcon = desktopIcons.find((i) => i.text === 'about.txt');
+			if (desktopIcon) {
+				openWindow({
+					...desktopIcon,
+					title: desktopIcon.text
+				});
+			}
+		}, 1000);
 	});
 
 	onMount(async () => {

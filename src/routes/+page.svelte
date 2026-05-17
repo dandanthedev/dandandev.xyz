@@ -1,6 +1,6 @@
 <script>
 	import { faWindows } from '@fortawesome/free-brands-svg-icons';
-	import { preloadedAssets, biosSettings, didInitLocals } from '$lib/stores.js';
+	import { preloadedAssets, biosSettings, didInitLocals, trolls } from '$lib/stores.js';
 	import { onMount } from 'svelte';
 	import Fa from 'svelte-fa';
 	import { fade } from 'svelte/transition';
@@ -70,10 +70,13 @@
 		if (wentToBios) return;
 
 		// //TROLLS
-		const trolls = ['update', '11'];
-		const trollChance = 0.1; //10% chance to go to a random troll page
+		const trollChance = $biosSettings.trollChance.value;
 		if (Math.random() < trollChance && $biosSettings.trolls.value) {
-			return goto(`/trolls/${trolls[Math.floor(Math.random() * trolls.length)]}`);
+			if ($biosSettings.forceTroll.value) {
+				return goto(`/trolls/${$biosSettings.forceTroll.value}`);
+			} else {
+				return goto(`/trolls/${trolls[Math.floor(Math.random() * trolls.length)]}`);
+			}
 		}
 
 		goto('/home');
@@ -84,7 +87,7 @@
 
 		//on delete press, go to bios
 		function onKeydown(e) {
-			if (e.key === 'Delete') {
+			if (e.key === 'Delete' && !overlay) {
 				wentToBios = true;
 				goto('/bios');
 			}

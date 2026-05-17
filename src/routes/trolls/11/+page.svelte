@@ -48,6 +48,7 @@
 		<a
 			href="/"
 			class="deny"
+			class:bigger={triedUpgrade}
 			on:click|preventDefault={async () => {
 				overlay = true;
 				await new Promise((r) => setTimeout(r, 1000));
@@ -145,6 +146,13 @@
 		font-weight: 400;
 		margin-top: 10px;
 		font-size: 0.7em;
+		transition: all 0.2s;
+	}
+
+	.bigger {
+		transform: scale(2.5);
+		margin-top: 20px;
+		text-decoration: underline;
 	}
 
 	.video {

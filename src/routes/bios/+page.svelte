@@ -16,10 +16,23 @@
 				);
 				$biosSettings[key].value = editing.value;
 				editing = null;
+				setTimeout(() => {
+					$biosSettings[key].button.focus();
+				}, 1);
+
 				return;
 			}
 			if (event.key === 'Escape') {
-				if (editing) return (editing = null);
+				if (editing) {
+					const key = Object.keys($biosSettings).find(
+						(k) => $biosSettings[k].displayName === editing.displayName
+					);
+					editing = null;
+					setTimeout(() => {
+						$biosSettings[key].button.focus();
+					}, 1);
+					return;
+				}
 				overlay = true;
 				await new Promise((r) => setTimeout(r, 1000)); //wait for fadeout
 				goto('/');
@@ -71,6 +84,19 @@
 				autofocus
 			>
 				[{editing.value ? 'true' : 'false'}]
+			</button>
+		{:else if editing.type === 'select'}
+			<button
+				on:click={() => {
+					editing.value =
+						editing.options[
+							(editing.options.findIndex((o) => o.value === editing.value) + 1) %
+								editing.options.length
+						].value;
+				}}
+				autofocus
+			>
+				[{editing.options.find((o) => o.value === editing.value).displayName}]
 			</button>
 		{/if}
 	</div>

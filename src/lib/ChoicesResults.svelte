@@ -62,7 +62,7 @@
 		background-size: cover;
 		background-position: center;
 		position: relative;
-		font-family: 'Press Start 2P', cursive;
+		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	}
 
 	.thing-overlay {
@@ -107,9 +107,9 @@
 	.totalGames {
 		text-align: center;
 		color: black;
-		font-size: 2em;
+		font-size: 1.5em;
 		width: 100%;
-		margin-bottom: 25px;
+		margin-bottom: 20px;
 	}
 
 	.totalGames p {

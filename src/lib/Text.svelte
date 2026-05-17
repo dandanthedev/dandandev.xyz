@@ -2,23 +2,44 @@
 	export let passToComponent;
 </script>
 
-<p>
+<div class="text {passToComponent.allowHTML ? 'html' : 'pre'}">
 	{#if passToComponent.allowHTML}
 		{@html passToComponent.text || ''}
 	{:else}
 		{passToComponent.text || ''}
 	{/if}
-</p>
+</div>
 
 {#if passToComponent.buttons?.length > 0}
-	{#each passToComponent.buttons as button}
-		<button on:click={button.action} class="button">{button.text}</button>
-	{/each}
+	<div class="buttons">
+		{#each passToComponent.buttons as button}
+			<button on:click={button.action} class="button">{button.text}</button>
+		{/each}
+	</div>
 {/if}
 
 <style>
-	p {
+	.text {
 		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		padding-top: 1rem;
+	}
+
+	.text.pre {
+		white-space: pre-wrap;
+		word-wrap: break-word;
+		overflow-wrap: anywhere;
+	}
+
+	.text.html {
+		white-space: normal;
+	}
+
+	.buttons {
+		display: flex;
+		justify-content: flex-start;
+		gap: 10px;
+		margin-top: 1rem;
+		flex-wrap: wrap;
 	}
 
 	.button {

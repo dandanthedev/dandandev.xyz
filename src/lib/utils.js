@@ -5,9 +5,20 @@ import ChoicesResults from '$lib/ChoicesResults.svelte';
 import Credits from '$lib/Credits.svelte';
 
 export function getScreenSize() {
-    //find with and height of element with class backgroundImage 
-    const screenW = document.querySelector('.backgroundImage').clientWidth;
-    const screenH = document.querySelector('.backgroundImage').clientHeight;
+    // Prefer the actual viewport size (prevents positioning issues
+    // when the background element size differs). Fallback to the
+    // backgroundImage element if `window` is not available.
+    let screenW = typeof window !== 'undefined' ? window.innerWidth : 0;
+    let screenH = typeof window !== 'undefined' ? window.innerHeight : 0;
+
+    if ((!screenW || !screenH) && typeof document !== 'undefined') {
+        const el = document.querySelector('.backgroundImage');
+        if (el) {
+            screenW = el.clientWidth;
+            screenH = el.clientHeight;
+        }
+    }
+
     return {
         screenW,
         screenH

@@ -8,7 +8,12 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 	import { preloadedAssets } from '$lib/stores.js';
 	import { goto } from '$app/navigation';
-	import { faArrowLeft, faCheckCircle, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faArrowLeft,
+		faCheckCircle,
+		faPowerOff,
+		faVolumeHigh
+	} from '@fortawesome/free-solid-svg-icons';
 	import { getScreenSize, availableComponents } from '$lib/utils.js';
 	import { biosSettings } from '$lib/stores.js';
 	let zindex = 1;
@@ -63,6 +68,13 @@
 		let gennedX = 0;
 		let gennedY = 0;
 
+		//put it in the middle of screen if possible, otherwise top left corner
+		if (screenW - windowData.width > 0) gennedX = screenW / 2 - windowData.width / 2;
+		else gennedX = 0;
+
+		if (screenH - windowData.height > 0) gennedY = screenH / 2 - windowData.height / 2;
+		else gennedY = 0;
+
 		const newWindow = {
 			component: windowData.component,
 			title: windowData.title,
@@ -84,22 +96,13 @@
 
 		setTimeout(() => {
 			openWindows = [...openWindows, newWindow];
+			focusWindow(newWindow.id);
 		}, 1);
 	}
 
 	function focusWindow(id) {
 		for (let i = 0; i < openWindows.length; i++) {
 			if (openWindows[i].id === id) {
-				// openWindows[i].focus = true;
-
-				// currentFocus = openWindows[i].id;
-
-				// setTimeout(() => {
-				// 	openWindows[i].focus = false;
-				// }, 1);
-
-				// break;
-
 				if (currentFocus === id) {
 					openWindows[i].focus = true;
 					currentFocus = null;
@@ -110,12 +113,14 @@
 					currentFocus = id;
 					//bring to top
 					openWindows[i].comeToTop = true;
-					setTimeout(() => {
+					openWindows[i].setTimeout(() => {
 						openWindows[i].comeToTop = false;
 					}, 2);
 				}
 			}
 		}
+
+		openWindows = [...openWindows];
 	}
 
 	let overlay = true;
@@ -249,7 +254,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 			icon: $preloadedAssets.txt,
 			text: 'contact.txt',
 			component: 'Text',
-			width: 500,
+			width: 550,
 			height: 200,
 			passToComponent: {
 				text: `Want to have a chat? Feel free to hit me up using any (or all) of the following methods:`,
@@ -407,7 +412,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 		updateSelection();
 	}
 
-	let display = false;
+	let selectionThingOpen = false;
 	let topLeftX = 0;
 	let topLeftY = 0;
 
@@ -416,7 +421,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 
 	function updateSelection() {
 		if (!startX || !startY || !endX || !endY) {
-			display = false;
+			selectionThingOpen = false;
 			return;
 		}
 
@@ -424,11 +429,11 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 		height = Math.abs(startY - endY);
 
 		if (Math.sqrt(width * width + height * height) < 10) {
-			display = false;
+			selectionThingOpen = false;
 			return;
 		}
 
-		display = true;
+		selectionThingOpen = true;
 
 		topLeftX = Math.min(startX, endX);
 		topLeftY = Math.min(startY, endY);
@@ -453,6 +458,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 				desktopIconElements[desktopIcons.indexOf(desktopIcon)]
 			);
 		}
+		desktopIcons = [...desktopIcons];
 	}
 
 	let desktopIconElements = [];
@@ -476,6 +482,8 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 				}
 			}
 
+			desktopIcons = [...desktopIcons];
+
 			//focus the body
 			document.body.focus();
 		}
@@ -491,7 +499,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 
 <div
 	class="desktopSelection"
-	style="display: {display
+	style="display: {selectionThingOpen
 		? 'block'
 		: 'none'}; top: {topLeftY}px; left: {topLeftX}px; width: {width}px; height: {height}px;"
 ></div>
@@ -512,7 +520,8 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 		<Window
 			bind:windows={openWindows}
 			bind:focus={window.focus}
-			bind:currentlyFocused={window.currentlyFocused}
+			bind:currentlyFocused={window.focus}
+			bind:focussedWindow={currentFocus}
 			bind:zIndex={window.zIndex}
 			bind:comeToTop={window.comeToTop}
 			{debug}
@@ -539,7 +548,20 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 		</Window>
 	{/each}
 
-	<div class="desktopIcons">
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div
+		class="desktopIcons"
+		on:mousedown={(e) => {
+			if (e.target.classList.contains('desktopIcon') || e.target.closest('.desktopIcon')) {
+				//clicked on an icon, not the desktop
+				return;
+			}
+			desktopIcons.forEach((i) => {
+				i.clicked = false;
+			});
+			desktopIcons = [...desktopIcons];
+		}}
+	>
 		{#each desktopIcons as icon}
 			<button
 				class="desktopIcon"
@@ -551,18 +573,17 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 							if (i.id === icon.id) return;
 							i.clicked = false;
 						});
-
-					if (icon.clicked) {
-						if (icon.run) icon.run();
-						else
-							openWindow({
-								...icon,
-								title: icon.text
-							});
-						icon.clicked = false;
-					} else {
-						icon.clicked = true;
-					}
+				}}
+				on:mouseup={(e) => {
+					if (selectionThingOpen) return;
+					if (!icon.clicked) return (icon.clicked = true);
+					if (icon.run) icon.run();
+					else
+						openWindow({
+							...icon,
+							title: icon.text
+						});
+					icon.clicked = false;
 				}}
 				class:clicked={icon.clicked}
 			>
@@ -619,7 +640,7 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 					soundsMenu = !soundsMenu;
 				}}
 			>
-				<img src={$preloadedAssets.volume} alt="volume" />
+				<Fa icon={faVolumeHigh} />
 			</button>
 			<p class="dateTime">
 				{time}<br />
@@ -903,17 +924,11 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 		margin-top: 3px;
 
 		transition: filter 0.2s;
+		font-size: 1em;
 	}
 
 	.volume:hover {
 		filter: brightness(1.2);
-	}
-
-	.volume img {
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
-		display: block;
 	}
 
 	.soundsMenu {

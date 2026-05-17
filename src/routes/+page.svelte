@@ -10,8 +10,6 @@
 	let loadingText = '';
 	let assets = {
 		background: '/background.jpg',
-		volume: '/taskbar/volume.png',
-
 		explorer: '/icons/explorer.png',
 		debugger: '/icons/debugger.png',
 		chrome: '/icons/chrome.png',

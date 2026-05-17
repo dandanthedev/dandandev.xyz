@@ -27,6 +27,7 @@
 
 	export let currentlyFocused = false;
 	export let comeToTop = false;
+	export let focussedWindow = '';
 
 	//just to make sure no random linking jazz happens
 	let width = parseInt(initialWidth);
@@ -55,6 +56,7 @@
 
 	$: if (comeToTop) {
 		zIndex = getNextZIndex();
+		hidden = false;
 	}
 
 	onMount(() => {
@@ -67,11 +69,9 @@
 <div
 	on:focus={() => {
 		currentlyFocused = true;
-		console.log('focus');
 	}}
 	on:blur={() => {
 		currentlyFocused = false;
-		console.log('blur');
 	}}
 	use:draggable={{
 		handle: '.header',
@@ -91,7 +91,7 @@
 	}}
 	class="window"
 	data-windowId={id}
-	style="width: {width}px; height: {height}px; left: {x}px; top: {y}px; z-index: {zIndex}; opacity: {hidden
+	style="width: {width}px; height: {height}px; z-index: {zIndex}; opacity: {hidden
 		? 0
 		: 1}; pointer-events: {hidden ? 'none' : 'auto'};"
 	in:scale={{ duration: 200, start: 0.9, opacity: 0 }}
@@ -105,6 +105,7 @@
 	on:click={() => {
 		zIndex = getNextZIndex();
 	}}
+	class:focused={focussedWindow === id}
 >
 	<div class="header">
 		<h1>{title} {debug ? id : ''}</h1>
@@ -166,7 +167,9 @@
 		</button>
 	</div>
 	<div class="headerSpacer" />
-	<slot />
+	<div class="content">
+		<slot />
+	</div>
 </div>
 
 <style>
@@ -181,6 +184,17 @@
 		overflow: hidden;
 
 		transition: opacity 0.3s;
+	}
+
+	.content {
+		position: absolute;
+		top: 38px;
+		left: 10px;
+		right: 10px;
+		bottom: 10px;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding-right: 5px;
 	}
 
 	.header {
@@ -221,5 +235,12 @@
 		color: rgb(100, 100, 100);
 		cursor: pointer;
 		margin-top: 5px;
+	}
+
+	.focused {
+		border-width: 2px;
+		border-color: rgb(0, 123, 255);
+		border-style: solid;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 	}
 </style>

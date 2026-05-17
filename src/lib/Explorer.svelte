@@ -142,12 +142,6 @@
 		gap: 0.4rem;
 		font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 		margin-top: 1rem;
-
-		/*enable scrolling*/
-		overflow-y: auto;
-		height: 100%;
-		scrollbar-width: thin;
-		scrollbar-color: var(--color-bg-3) var(--color-bg-2);
 	}
 	.item {
 		display: flex;

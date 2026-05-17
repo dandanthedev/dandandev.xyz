@@ -560,6 +560,10 @@ Anything not mentioned here? Feel free to ask me about it :D`,
 				i.clicked = false;
 			});
 			desktopIcons = [...desktopIcons];
+
+			//close all menus (todo: yuck)
+			startMenu = false;
+			soundsMenu = false;
 		}}
 	>
 		{#each desktopIcons as icon}
